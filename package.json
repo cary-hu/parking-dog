@@ -14,10 +14,12 @@
     "dayjs": "^1.11.8",
     "lodash": "^4.17.21",
     "sass": "^1.63.2",
+    "uuid": "^9.0.0",
     "vue": "^3.2.47"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
+    "@types/uuid": "^9.0.1",
     "@vitejs/plugin-vue": "^4.1.0",
     "eslint": "^8.42.0",
     "typescript": "^5.0.2",

@@ -1,8 +1,6 @@
 // uno.config.ts
 import {
-  defineConfig, presetAttributify, presetIcons,
-  presetTypography, presetUno, presetWebFonts,
-  transformerDirectives, transformerVariantGroup,
+  defineConfig, presetAttributify, presetUno,
 } from 'unocss'
 
 export default defineConfig({
@@ -17,16 +15,5 @@ export default defineConfig({
   presets: [
     presetUno(),
     presetAttributify(),
-    presetIcons(),
-    presetTypography(),
-    presetWebFonts({
-      fonts: {
-        // ...
-      },
-    }),
-  ],
-  transformers: [
-    transformerDirectives(),
-    transformerVariantGroup(),
   ],
 })

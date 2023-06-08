@@ -11,6 +11,9 @@ export default defineConfig({
     colors: {
       // ...
     },
+    container: {
+      center: true,
+    },
   },
   presets: [
     presetUno(),

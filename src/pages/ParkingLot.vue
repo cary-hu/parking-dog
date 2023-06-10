@@ -16,18 +16,17 @@ parkingLotService.ensureParkingLotBasket()
 
 <template>
   <h1>Parking Lot</h1>
-  <div class="btn-group btn-group-sm">
-    <button class="btn btn-primary" @click="addParkingLots">
+  <v-btn-group>
+    <v-btn @click="addParkingLots">
       Add Parking Lot
-    </button>
-    <button class="btn btn-primary">
+    </v-btn>
+    <v-btn>
       Update Parking Lot
-    </button>
-
-    <button class="btn btn-primary" @click="getParkingLots">
+    </v-btn>
+    <v-btn @click="getParkingLots">
       Get All Parking Lot
-    </button>
-  </div>
+    </v-btn>
+  </v-btn-group>
   <div>
     <ParkingLotItem v-for="parkingLot in allParkingLots" :key="parkingLot.id" :item="parkingLot" />
   </div>

@@ -13,8 +13,8 @@ async function removeParkingLots() {
 <template>
   <div>
     {{ item!.name }}
-    <button class="btn btn-primary" @click="removeParkingLots">
+    <v-btn @click="removeParkingLots">
       Remove Parking Lot
-    </button>
+    </v-btn>
   </div>
 </template>

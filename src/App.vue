@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import pantry from './services/pantry'
-
-async function a() {
-  const b = await pantry.getDetails()
-  console.log(b)
-}
-a()
+import ParkingLot from './pages/ParkingLot.vue'
 </script>
 
 <template>
   <HHeader />
   <main container>
+    <ParkingLot />
     <ParkingInfo />
   </main>
   <HFooter />

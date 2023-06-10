@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { UpdatePantry } from '@/@types/pantry'
+import type { Pantry } from '@/@types/pantry'
 import { RequestType } from '@/@types/request'
 
 const pantryID = '93867265-4602-4abd-9f20-539314e679e7'
@@ -14,14 +14,14 @@ const baseConfig = {
 }
 
 class PantryService {
-  public async getDetails() {
+  public async getDetails(): Promise<Pantry> {
     const config = {
       ...baseConfig,
     }
     return (await axios(config)).data
   }
 
-  public async updateDetails(data: UpdatePantry) {
+  public async updateDetails(data: Pantry): Promise<Pantry> {
     const config = {
       ...baseConfig,
       method: RequestType.PUT,

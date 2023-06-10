@@ -1,10 +1,10 @@
-export class UpdatePantry {
-  name = ''
-  description = ''
+export class Pantry {
+  public name = ''
+  public description = ''
+  public baskets: Basket[] = []
 }
 
 export class Basket {
-  derp = ''
-  testPayload = true
-  keysLength = 3
+  public name = ''
+  public ttl = 0
 }

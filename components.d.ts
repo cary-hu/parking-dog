@@ -14,5 +14,8 @@ declare module 'vue' {
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']
     ParkingInfoItem: typeof import('./src/components/ParkingInfoItem.vue')['default']
     ParkingLot: typeof import('./src/pages/ParkingLot.vue')['default']
+    ParkingLotItem: typeof import('./src/components/ParkingLotItem.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }

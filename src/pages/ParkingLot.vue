@@ -2,16 +2,15 @@
 import { ParkingLotInfo } from '@/@types/parkingLot'
 import parkingLotService from '@/services/parkingLotService'
 
+const allParkingLots = ref<ParkingLotInfo[]>([])
+
 async function getParkingLots() {
-  const parkingLots = await parkingLotService.getParkingLots()
-  console.log(parkingLots)
+  allParkingLots.value = await parkingLotService.getParkingLots()
 }
 async function addParkingLots() {
   await parkingLotService.addOrUpdateParkingLot(new ParkingLotInfo())
 }
-async function removeParkingLots() {
-  await parkingLotService.removeParkingLot('f10b9f2d-dd49-4edc-9864-cb8ea6e690b4')
-}
+
 parkingLotService.ensureParkingLotBasket()
 </script>
 
@@ -24,11 +23,12 @@ parkingLotService.ensureParkingLotBasket()
     <button class="btn btn-primary">
       Update Parking Lot
     </button>
-    <button class="btn btn-primary" @click="removeParkingLots">
-      Remove Parking Lot
-    </button>
+
     <button class="btn btn-primary" @click="getParkingLots">
       Get All Parking Lot
     </button>
+  </div>
+  <div>
+    <ParkingLotItem v-for="parkingLot in allParkingLots" :key="parkingLot.id" :item="parkingLot" />
   </div>
 </template>

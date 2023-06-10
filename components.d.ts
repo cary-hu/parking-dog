@@ -10,6 +10,7 @@ declare module 'vue' {
     App: typeof import('./src/App.vue')['default']
     HFooter: typeof import('./src/components/HFooter.vue')['default']
     HHeader: typeof import('./src/components/HHeader.vue')['default']
+    Home: typeof import('./src/pages/Home.vue')['default']
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']
     ParkingInfoItem: typeof import('./src/components/ParkingInfoItem.vue')['default']
     ParkingLot: typeof import('./src/pages/ParkingLot.vue')['default']

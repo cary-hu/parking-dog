@@ -12,4 +12,9 @@ export default defineConfig({
     }),
     vue(),
   ],
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
 })

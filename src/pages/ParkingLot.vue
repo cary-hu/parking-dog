@@ -5,47 +5,49 @@ import parkingLotService from '@/services/parkingLotService'
 const allParkingLots = ref<ParkingLotInfo[]>([])
 const addParkingLotDialog = ref(false)
 const addParkingLotFormValid = ref(false)
+const addParkingLotLoading = ref(false)
 const addParkingLotData = ref(new ParkingLotInfo())
-const zoom = ref(12)
-const center = ref([121.59996, 31.197646])
+const zoom = ref(16)
+const center = ref([108.86888340442673, 34.237322002402756])
 let map: any = null
-watch(center, () => {
-  map.setCenter(center, true)
-})
+
 const geolocationOptions = {
   enableHighAccuracy: true,
   timeout: 5000,
   maximumAge: 0,
 }
-navigator.geolocation.getCurrentPosition((pos) => {
-  const crd = pos.coords
-  center.value[1] = crd.latitude
-  center.value[0] = crd.longitude
-  draw(center.value)
-}, null, geolocationOptions)
-navigator.geolocation.watchPosition((pos) => {
-  const crd = pos.coords
-  center.value[1] = crd.latitude
-  center.value[0] = crd.longitude
-  draw(center.value)
-}, null, geolocationOptions)
 
 async function getParkingLots() {
   allParkingLots.value = await parkingLotService.getParkingLots()
 }
 async function addParkingLots() {
-  await parkingLotService.addOrUpdateParkingLot(new ParkingLotInfo())
+  addParkingLotLoading.value = true
+  try {
+    await parkingLotService.addOrUpdateParkingLot(addParkingLotData.value)
+    addParkingLotDialog.value = false
+  }
+  catch (error) {
+
+  }
+  addParkingLotLoading.value = false
 }
 function onOpenAddParkingLotDialog() {
   addParkingLotData.value = new ParkingLotInfo()
 }
 
-function mapInit(e: any) {
-  const marker = new (AMap as any).Marker({
-    position: center.value,
+function mapInit(_map: any) {
+  map = _map
+  watch(center, () => {
+    map.setCenter(center.value, true)
+    draw(center.value)
+  }, {
+    immediate: true,
   })
-  e.add(marker)
-  map = e
+  navigator.geolocation.getCurrentPosition((pos) => {
+    const crd = pos.coords
+    center.value[0] = crd.longitude
+    center.value[1] = crd.latitude
+  }, null, geolocationOptions)
 }
 function draw(pos: number[]) {
   if (!map) {
@@ -59,9 +61,17 @@ function draw(pos: number[]) {
     position: pos,
   })
   map.add(marker)
+  addParkingLotData.value.location.lng = pos[0]
+  addParkingLotData.value.location.lat = pos[1]
 }
 
-parkingLotService.ensureParkingLotBasket()
+async function init() {
+  await parkingLotService.ensureParkingLotBasket()
+}
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <template>
@@ -92,15 +102,10 @@ parkingLotService.ensureParkingLotBasket()
             >
               Exit
             </v-btn>
-            <v-btn
-              variant="text"
-              @click="addParkingLotDialog = false"
-            >
-              Save
-            </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-form v-model="addParkingLotFormValid">
+        <v-progress-linear :indeterminate="addParkingLotLoading" />
+        <v-form v-model="addParkingLotFormValid" :disabled="addParkingLotLoading" @submit.prevent="addParkingLots">
           <v-container fluid>
             <v-row>
               <v-col>
@@ -135,6 +140,18 @@ parkingLotService.ensureParkingLotBasket()
               </v-col>
             </v-row>
             <v-row>
+              <v-text-field
+                v-model="addParkingLotData.location.lng"
+                label="longitude"
+                disabled
+              />
+              <v-text-field
+                v-model="addParkingLotData.location.lat"
+                label="latitude"
+                disabled
+              />
+            </v-row>
+            <v-row>
               <v-col>
                 <div class="map-page-container">
                   <el-amap
@@ -152,6 +169,9 @@ parkingLotService.ensureParkingLotBasket()
               </v-col>
             </v-row>
           </v-container>
+          <v-btn type="submit" block class="mt-2">
+            Add
+          </v-btn>
         </v-form>
       </v-card>
     </v-dialog>
@@ -170,6 +190,6 @@ parkingLotService.ensureParkingLotBasket()
 <style>
 .map-page-container {
   width:100%;
-  height: 500px;
+  height: 300px;
   }
 </style>

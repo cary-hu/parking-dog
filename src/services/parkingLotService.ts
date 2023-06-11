@@ -23,17 +23,8 @@ class ParkingLotService {
     return await PantryService.updateContents(PARKING_LOT_INFO_BASKET_NAME, JSON.stringify(data))
   }
 
-  public async getParkingLots() {
-    const originData = await PantryService.getContents(PARKING_LOT_INFO_BASKET_NAME)
-    const targetData = []
-    for (const key in originData) {
-      if (Object.prototype.hasOwnProperty.call(originData, key)) {
-        const element = originData[key]
-        if (element)
-          targetData.push(element)
-      }
-    }
-    return targetData
+  public async getParkingLots(): Promise<ParkingLotInfo[]> {
+    return await PantryService.getBasketContentAsArray(PARKING_LOT_INFO_BASKET_NAME)
   }
 }
 

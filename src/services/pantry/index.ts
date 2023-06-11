@@ -64,6 +64,19 @@ class PantryService {
     return (await axios(config)).data
   }
 
+  public async getBasketContentAsArray(basketName: string) {
+    const originData = await this.getContents(basketName)
+    const targetData = []
+    for (const key in originData) {
+      if (Object.prototype.hasOwnProperty.call(originData, key)) {
+        const element = originData[key]
+        if (element)
+          targetData.push(element)
+      }
+    }
+    return targetData
+  }
+
   public async deleteBasket(basketName: string) {
     const config = {
       ...baseConfig,

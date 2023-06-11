@@ -6,5 +6,4 @@
   <main container>
     <router-view />
   </main>
-  <HFooter />
 </template>

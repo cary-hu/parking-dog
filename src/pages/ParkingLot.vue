@@ -81,112 +81,111 @@ onMounted(() => {
 
 <template>
   <h1>Parking Lot</h1>
-  <v-btn-group>
-    <v-dialog
-      v-model="addParkingLotDialog"
-      fullscreen
-      :scrim="false"
-      transition="dialog-bottom-transition"
-    >
-      <template #activator="{ props }">
-        <v-btn
-          v-bind="props"
-          @click="onOpenAddParkingLotDialog"
-        >
-          Add Parking Lot
-        </v-btn>
-      </template>
-      <v-card>
-        <v-toolbar>
-          <v-toolbar-title>Parking Lot</v-toolbar-title>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn
-              variant="text"
-              @click="addParkingLotDialog = false"
-            >
-              Exit
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-progress-linear :indeterminate="addParkingLotLoading" />
-        <v-form v-model="addParkingLotFormValid" :disabled="addParkingLotLoading" @submit.prevent="addParkingLots">
-          <v-container fluid>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="addParkingLotData.name"
-                  label="Parking Lot Name"
-                  required
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="addParkingLotData.cost.price"
-                  label="Price"
-                />
-              </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="addParkingLotData.cost.per"
-                  label="Per"
-                />
-              </v-col>
-              <v-col>
-                <v-select
-                  v-model="addParkingLotData.cost.period"
-                  label="Unit"
-                  persistent-hint
-                  :hint="`${addParkingLotData.cost.price} Yuan, per ${addParkingLotData.cost.per} ${addParkingLotData.cost.period}, away from home ${distanceBetweenHomeAndParkingLot} miles`"
-                  :items="['hour', 'day', 'week', 'month', 'year']"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-text-field
-                v-model="addParkingLotData.location.lng"
-                label="longitude"
-                disabled
-              />
-              <v-text-field
-                v-model="addParkingLotData.location.lat"
-                label="latitude"
-                disabled
-              />
-            </v-row>
-            <v-row>
-              <v-col>
-                <div class="map-page-container">
-                  <el-amap
-                    :center="center"
-                    :zoom="zoom"
-                    @init="mapInit"
-                  >
-                    <el-amap-mouse-tool
-                      type="marker"
-                      :show-tooltip="false"
-                      @draw="draw"
-                    />
-                  </el-amap>
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-btn type="submit" block class="mt-2">
-            Add
+  <v-dialog
+    v-model="addParkingLotDialog"
+    fullscreen
+    :scrim="false"
+    transition="dialog-bottom-transition"
+  >
+    <template #activator="{ props }">
+      <v-btn
+        variant="elevated"
+        v-bind="props"
+        @click="onOpenAddParkingLotDialog"
+      >
+        Add Parking Lot
+      </v-btn>
+    </template>
+    <v-card>
+      <v-toolbar>
+        <v-toolbar-title>Parking Lot</v-toolbar-title>
+        <v-spacer />
+        <v-toolbar-items>
+          <v-btn
+            variant="text"
+            @click="addParkingLotDialog = false"
+          >
+            Exit
           </v-btn>
-        </v-form>
-      </v-card>
-    </v-dialog>
-    <v-btn>
-      Update Parking Lot
-    </v-btn>
-    <v-btn @click="getParkingLots">
-      Get All Parking Lot
-    </v-btn>
-  </v-btn-group>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-progress-linear :indeterminate="addParkingLotLoading" />
+      <v-form v-model="addParkingLotFormValid" :disabled="addParkingLotLoading" @submit.prevent="addParkingLots">
+        <v-container fluid>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="addParkingLotData.name"
+                label="Parking Lot Name"
+                required
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="addParkingLotData.cost.price"
+                label="Price"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="addParkingLotData.cost.per"
+                label="Per"
+              />
+            </v-col>
+            <v-col>
+              <v-select
+                v-model="addParkingLotData.cost.period"
+                label="Unit"
+                persistent-hint
+                :hint="`${addParkingLotData.cost.price} Yuan, per ${addParkingLotData.cost.per} ${addParkingLotData.cost.period}, away from home ${distanceBetweenHomeAndParkingLot} miles`"
+                :items="['hour', 'day', 'week', 'month', 'year']"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-text-field
+              v-model="addParkingLotData.location.lng"
+              label="longitude"
+              disabled
+            />
+            <v-text-field
+              v-model="addParkingLotData.location.lat"
+              label="latitude"
+              disabled
+            />
+          </v-row>
+          <v-row>
+            <v-col>
+              <div class="map-page-container">
+                <el-amap
+                  :center="center"
+                  :zoom="zoom"
+                  @init="mapInit"
+                >
+                  <el-amap-mouse-tool
+                    type="marker"
+                    :show-tooltip="false"
+                    @draw="draw"
+                  />
+                </el-amap>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-btn type="submit" block class="mt-2">
+          Add
+        </v-btn>
+      </v-form>
+    </v-card>
+  </v-dialog>
+  <v-btn mx-2>
+    Update Parking Lot
+  </v-btn>
+  <v-btn @click="getParkingLots">
+    Get All Parking Lot
+  </v-btn>
   <div>
     <ParkingLotItem v-for="parkingLot in allParkingLots" :key="parkingLot.id" :item="parkingLot" />
   </div>

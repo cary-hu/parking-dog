@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ParkingLotInfo } from '@/@types/parkingLot'
+import { MapUtils } from '@/mapUtils'
 import parkingLotService from '@/services/parkingLotService'
 
 const allParkingLots = ref<ParkingLotInfo[]>([])
@@ -9,6 +10,10 @@ const addParkingLotLoading = ref(false)
 const addParkingLotData = ref(new ParkingLotInfo())
 const zoom = ref(16)
 const center = ref([108.86888340442673, 34.237322002402756])
+const home = ref([108.87116, 34.234962])
+const distanceBetweenHomeAndParkingLot = computed(() => {
+  return MapUtils.distance(center.value, home.value)
+})
 let map: any = null
 
 const geolocationOptions = {
@@ -134,7 +139,7 @@ onMounted(() => {
                   v-model="addParkingLotData.cost.period"
                   label="Unit"
                   persistent-hint
-                  :hint="`${addParkingLotData.cost.price} Yuan, per ${addParkingLotData.cost.per} ${addParkingLotData.cost.period}`"
+                  :hint="`${addParkingLotData.cost.price} Yuan, per ${addParkingLotData.cost.per} ${addParkingLotData.cost.period}, away from home ${distanceBetweenHomeAndParkingLot} miles`"
                   :items="['hour', 'day', 'week', 'month', 'year']"
                 />
               </v-col>

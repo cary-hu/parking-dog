@@ -22,7 +22,9 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
+    "@turf/turf": "^6.5.0",
     "@types/uuid": "^9.0.1",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vuemap/unplugin-resolver": "^2.0.0",
     "eslint": "^8.42.0",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ParkingLotInfo } from '@/@types/parkingLot'
-import { MapUtils } from '@/mapUtils'
+import { MapUtils } from '@/utils/mapUtils'
 import parkingLotService from '@/services/parkingLotService'
 
 const allParkingLots = ref<ParkingLotInfo[]>([])
@@ -12,7 +12,7 @@ const zoom = ref(16)
 const center = ref([108.86888340442673, 34.237322002402756])
 const home = ref([108.87116, 34.234962])
 const distanceBetweenHomeAndParkingLot = computed(() => {
-  return MapUtils.distance(center.value, home.value)
+  return MapUtils._distance(center.value, home.value)
 })
 let map: any = null
 

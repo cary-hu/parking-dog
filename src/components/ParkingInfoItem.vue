@@ -12,8 +12,7 @@ const props = defineProps({
 const message = useMessage()
 
 async function onExitParkingLot() {
-  const parkingId = props.parkingInfo!.id
-  const parkingInfo = await parkingService.getParkingInfo(parkingId)
+  const parkingInfo = props.parkingInfo
   if (!parkingInfo)
     message.error('Getting parking info failed')
 
@@ -48,22 +47,28 @@ function mapInit(map: any) {
     </div>
     <v-card-item :title="parkingInfo?.parkingLot.name">
       <template #subtitle>
-        <span v-if="parkingInfo?.startTime === parkingInfo?.endTime">
-          Parking: {{ $dayjs(parkingInfo?.startTime).toNow(true) }}
-        </span>
-        <span v-else>
-          Parking: {{ $dayjs(parkingInfo?.startTime).to(parkingInfo?.endTime, true) }}
-        </span>
+        <div class="d-flex py-2" text-5 text-slate-950>
+          <div class="me-2">
+            <span flex items-center><i text-center class="me-2 fa-solid fa-brain" />{{ parkingInfo?.expectedCost }}</span>
+          </div>
+          <div>
+            <span flex items-center><i text-center class="me-2 fa-solid fa-yen-sign" />{{ parkingInfo?.actualCost }}</span>
+          </div>
+        </div>
       </template>
     </v-card-item>
 
     <v-card-text class="py-0">
-      <v-row align="center" no-gutters>
+      <v-row no-gutters>
         <v-col
           class="text-h2"
         >
-          <span flex items-center><i w-10 text-center text-8 class="fa-solid fa-brain" />{{ parkingInfo?.expectedCost }}</span>
-          <span flex items-center><i w-10 text-center text-8 class="fa-solid fa-yen-sign" />{{ parkingInfo?.actualCost }}</span>
+          <span v-if="parkingInfo?.startTime === parkingInfo?.endTime">
+            {{ $dayjs(parkingInfo?.startTime).toNow(true) }}
+          </span>
+          <span v-else>
+            {{ $dayjs(parkingInfo?.startTime).to(parkingInfo?.endTime, true) }}
+          </span>
         </v-col>
       </v-row>
     </v-card-text>
@@ -72,16 +77,16 @@ function mapInit(map: any) {
       <v-list-item
         density="compact"
       >
-        <v-list-item-subtitle><i class="fa-regular fa-clock" />{{ $dayjs(parkingInfo?.startTime).format("YYYY-MM-DD HH:mm:ss") }}</v-list-item-subtitle>
+        <v-list-item-subtitle><i class="fa-regular fa-clock me-2" />{{ $dayjs(parkingInfo?.startTime).format("YYYY-MM-DD HH:mm:ss") }}</v-list-item-subtitle>
       </v-list-item>
 
       <v-list-item
         density="compact"
       >
         <v-list-item-subtitle>
-          <span v-if="parkingInfo?.startTime === parkingInfo?.endTime"><i class="fa-solid fa-hourglass-half" />Still Parking</span>
+          <span v-if="parkingInfo?.startTime === parkingInfo?.endTime"><i class="fa-solid fa-hourglass-half me-2" />Still Parking</span>
           <span v-else>
-            <i class="fa-solid fa-stopwatch" />{{ $dayjs(parkingInfo?.endTime).format("YYYY-MM-DD HH:mm:ss") }}
+            <i class="fa-solid fa-stopwatch me-2" />{{ $dayjs(parkingInfo?.endTime).format("YYYY-MM-DD HH:mm:ss") }}
           </span>
         </v-list-item-subtitle>
       </v-list-item>

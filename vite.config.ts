@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import { VueAmapResolver } from '@vuemap/unplugin-resolver'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,13 +15,28 @@ export default defineConfig({
     UnoCSS(),
     Components({
       dirs: ['src'],
-      resolvers: [VueAmapResolver()],
+      resolvers: [
+        VueAmapResolver(),
+        NaiveUiResolver(),
+      ],
     }),
     vue(),
     vuetify({ autoImport: true }),
     AutoImport({
-      imports: ['vue', 'vue-router'],
-      resolvers: [VueAmapResolver()],
+      imports: [
+        'vue',
+        'vue-router',
+        {
+          'naive-ui': [
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar',
+          ],
+        }],
+      resolvers: [
+        VueAmapResolver(),
+      ],
     }),
   ],
   resolve: {

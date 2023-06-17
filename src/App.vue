@@ -3,7 +3,7 @@
 
 <template>
   <HHeader />
-  <n-message-provider keep-alive-on-hover closable placement="top-right" :max="10">
+  <n-message-provider keep-alive-on-hover closable placement="top-right">
     <main container>
       <router-view />
     </main>

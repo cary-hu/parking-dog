@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import HavalFace from '@/assets/haval_dog.png'
 </script>
 
 <template>
   <header container relative flex items-center content-center>
     <router-link to="/" text-center mr-auto>
       <h1>
-        <img :src="HavalFace" w-16>
         Parking Dog
       </h1>
     </router-link>

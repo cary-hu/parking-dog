@@ -4,7 +4,7 @@ import PantryService from '@/services/pantry'
 
 const PARKING_INFO_BASKET_NAME = `${BasketPrefix}_parking_infos`
 class ParkingService {
-  public async ensureParkingLotBasket() {
+  public async ensureParkingInfoBasket() {
     const pantryDetails = await PantryService.getDetails()
     if (!pantryDetails.baskets.find(x => x.name === PARKING_INFO_BASKET_NAME))
       PantryService.createOrReplaceBasket(PARKING_INFO_BASKET_NAME, JSON.stringify({}))

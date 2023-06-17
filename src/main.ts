@@ -1,7 +1,10 @@
 import { createApp } from 'vue'
+import dayjs from 'dayjs'
 import VueAMap, { initAMapApiLoader } from '@vuemap/vue-amap'
 import '@vuemap/vue-amap/dist/style.css'
 import { createVuetify } from 'vuetify'
+import * as customParseFormat from 'dayjs/plugin/customParseFormat'
+import * as relativeTime from 'dayjs/plugin/relativeTime'
 import App from './App.vue'
 import router from '@/router'
 import 'vuetify/styles'
@@ -10,6 +13,10 @@ import 'virtual:uno.css'
 
 const vuetify = createVuetify()
 const app = createApp(App)
+
+dayjs.extend(customParseFormat)
+dayjs.extend(relativeTime)
+app.config.globalProperties.$dayjs = dayjs
 app.use(VueAMap)
 initAMapApiLoader({
   key: '84f68eb90ca4277c0cd941f2d7ec427d',

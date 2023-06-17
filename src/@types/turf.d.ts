@@ -1,2 +1,1 @@
-declare module '@turf/distance';
-declare module '@turf/helpers';
+declare module '@turf/turf';

@@ -1,1 +1,2 @@
-declare class AMap {}
+declare class AMap {
+}

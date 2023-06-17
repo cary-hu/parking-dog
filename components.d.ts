@@ -11,7 +11,6 @@ declare module 'vue' {
     HFooter: typeof import('./src/components/HFooter.vue')['default']
     HHeader: typeof import('./src/components/HHeader.vue')['default']
     Home: typeof import('./src/pages/Home.vue')['default']
-    MessageContent: typeof import('./src/components/MessageContent.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']

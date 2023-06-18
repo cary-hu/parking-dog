@@ -31,6 +31,14 @@ function mapInit(map: any) {
   })
   map.add(marker)
 }
+
+const isStillParking = computed(() => {
+  return props.parkingInfo?.startTime === props.parkingInfo?.endTime
+})
+const parkingLotCost = computed(() => {
+  const parkingLotInfoCost = props.parkingInfo?.parkingLot.cost
+  return `${parkingLotInfoCost?.price} Yuan per ${parkingLotInfoCost?.per} ${parkingLotInfoCost?.period}`
+})
 </script>
 
 <template>
@@ -45,14 +53,18 @@ function mapInit(map: any) {
         @init="mapInit"
       />
     </div>
-    <v-card-item :title="parkingInfo?.parkingLot.name">
+    <v-card-item>
+      <template #title>
+        <span text-6 block><i class="me-2 fa-solid fa-square-parking" />{{ parkingInfo?.parkingLot.name }}</span>
+        <span text-3>Price: {{ parkingLotCost }}</span>
+      </template>
       <template #subtitle>
-        <div class="d-flex py-2" text-5 text-slate-950>
-          <div class="me-2">
-            <span flex items-center><i text-center class="me-2 fa-solid fa-brain" />{{ parkingInfo?.expectedCost }}</span>
+        <div class="py-2" text-3 text-slate-950>
+          <div v-if="!isStillParking">
+            <span>Actual: {{ parkingInfo?.actualCost }}</span>
           </div>
           <div>
-            <span flex items-center><i text-center class="me-2 fa-solid fa-yen-sign" />{{ parkingInfo?.actualCost }}</span>
+            <span>Estimate: {{ parkingInfo?.expectedCost }}</span>
           </div>
         </div>
       </template>
@@ -73,7 +85,7 @@ function mapInit(map: any) {
       </v-row>
     </v-card-text>
 
-    <div class="d-flex py-3">
+    <div class="py-3">
       <v-list-item
         density="compact"
       >
@@ -81,11 +93,11 @@ function mapInit(map: any) {
       </v-list-item>
 
       <v-list-item
+        v-if="!isStillParking"
         density="compact"
       >
         <v-list-item-subtitle>
-          <span v-if="parkingInfo?.startTime === parkingInfo?.endTime"><i class="fa-solid fa-hourglass-half me-2" />Still Parking</span>
-          <span v-else>
+          <span>
             <i class="fa-solid fa-stopwatch me-2" />{{ $dayjs(parkingInfo?.endTime).format("YYYY-MM-DD HH:mm:ss") }}
           </span>
         </v-list-item-subtitle>
@@ -93,8 +105,11 @@ function mapInit(map: any) {
     </div>
 
     <v-card-actions>
-      <v-btn @click="onExitParkingLot">
+      <v-btn v-if="isStillParking" @click="onExitParkingLot">
         Exit Parking Lot
+      </v-btn>
+      <v-btn v-else @click="onExitParkingLot">
+        Modify
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -116,10 +131,13 @@ function mapInit(map: any) {
     left: 0;
     width: 100%;
     height: 100%;
-    -webkit-clip-path: polygon(0px 298px, 502px 300px, 500px 250px, 263px 201px, 189px 1px, 0px 0px);
-    clip-path: polygon(0px 298px, 502px 300px, 500px 250px, 263px 201px, 189px 1px, 0px 0px);
-    background: linear-gradient(45deg, rgba(255,255,255,1) 14%, rgba(255,255,255,0) 83%);
+    background: linear-gradient(53deg, #ffffff 25%, rgba(255, 255, 255, 0) 89%);
   }
+  .amap-copyright,
+  .amap-logo {
+    display: none !important;
+  }
+
 }
 
 .v-card-actions {

@@ -22,7 +22,8 @@ class ParkingService {
   }
 
   public async getParkingInfos(): Promise<ParkingInfo[]> {
-    return await PantryService.getBasketContentAsArray(PARKING_INFO_BASKET_NAME)
+    const allParkingInfos = await PantryService.getBasketContentAsArray(PARKING_INFO_BASKET_NAME) as ParkingInfo[]
+    return allParkingInfos.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
   }
 }
 

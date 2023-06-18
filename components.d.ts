@@ -12,6 +12,7 @@ declare module 'vue' {
     HHeader: typeof import('./src/components/HHeader.vue')['default']
     Home: typeof import('./src/pages/Home.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
+    NDatePicker: typeof import('naive-ui')['NDatePicker']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']
     ParkingInfoItem: typeof import('./src/components/ParkingInfoItem.vue')['default']

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ParkingInfo } from '@/@types/parkingInfo'
+import type { ParkingInfo } from '@/@types/parkingInfo'
 import parkingService from '@/services/parkingService'
 import { MapUtils } from '@/utils/mapUtils'
+import { parkingUtils } from '@/utils/parkingUtils'
 
-const props = defineProps({
-  parkingInfo: {
-    type: ParkingInfo,
-  },
-})
-
+const props = defineProps<{
+  parkingInfo: ParkingInfo
+}>()
 const message = useMessage()
 
 async function onExitParkingLot() {
@@ -39,6 +37,27 @@ const parkingLotCost = computed(() => {
   const parkingLotInfoCost = props.parkingInfo?.parkingLot.cost
   return `${parkingLotInfoCost?.price} Yuan per ${parkingLotInfoCost?.per} ${parkingLotInfoCost?.period}`
 })
+function getMinute(time: Date, twoTime: Date, value = 0) {
+  const chaTime = Math.abs(new Date(time).getTime() - new Date(twoTime).getTime())
+  if (value)
+    return Number.parseInt((chaTime / 60000).toString()) - value
+  else
+    return Number.parseInt((chaTime / 60000).toString())
+}
+
+const computedTrigger = ref(0)
+const estimateCost = computed(() => {
+  const a = computedTrigger.value + 1
+  if (a > 0) {
+    // do nothing
+  }
+  if (props.parkingInfo?.startTime !== props.parkingInfo?.endTime)
+    return props.parkingInfo?.expectedCost
+  return parkingUtils.calcEstimateCost(getMinute(props.parkingInfo!.startTime, new Date()), props.parkingInfo!.parkingLot.cost)
+})
+setInterval(() => {
+  computedTrigger.value++
+}, 60000)
 </script>
 
 <template>
@@ -61,10 +80,10 @@ const parkingLotCost = computed(() => {
       <template #subtitle>
         <div class="py-2" text-3 text-slate-950>
           <div v-if="!isStillParking">
-            <span>Actual: {{ parkingInfo?.actualCost }}</span>
+            <span>Actual: {{ parkingInfo?.actualCost }} Yuan</span>
           </div>
           <div>
-            <span>Estimate: {{ parkingInfo?.expectedCost }}</span>
+            <span>Estimate: {{ estimateCost }} Yuan</span>
           </div>
         </div>
       </template>

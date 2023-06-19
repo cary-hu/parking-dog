@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ParkingInfo } from '@/@types/parkingInfo'
+import { ParkingInfo } from '@/@types/parkingInfo'
 import parkingService from '@/services/parkingService'
 import { MapUtils } from '@/utils/mapUtils'
 import { parkingUtils } from '@/utils/parkingUtils'
@@ -7,16 +7,29 @@ import { parkingUtils } from '@/utils/parkingUtils'
 const props = defineProps<{
   parkingInfo: ParkingInfo
 }>()
+
+const emits = defineEmits(['onItemUpdated'])
 const message = useMessage()
+const modifyParkingInfoDialog = ref(true)
+const modifyParkingInfoDialogLoading = ref(false)
+const modifyParkingInfoForm = ref(null)
+const modifyParkingInfoTitle = ref('')
+const modifyParkingInfoButtonText = ref('')
+const modifyParkingInfoModel = ref<ParkingInfo>(new ParkingInfo())
+const parkingDateRange = ref<[number, number]>([new Date(props.parkingInfo.startTime).getTime(), Date.now()])
 
-async function onExitParkingLot() {
-  const parkingInfo = props.parkingInfo
-  if (!parkingInfo)
-    message.error('Getting parking info failed')
-
-  parkingInfo!.endTime = new Date()
-  parkingInfo!.expectedCost = 123
-  await parkingService.addOrUpdateParkingInfo(parkingInfo!)
+function openModifyParkingInfoDialog() {
+  modifyParkingInfoModel.value = props.parkingInfo
+  if (props.parkingInfo.startTime === props.parkingInfo.endTime) {
+    modifyParkingInfoTitle.value = 'Exit Parking Lot'
+    modifyParkingInfoButtonText.value = 'Exit'
+    modifyParkingInfoModel.value.endTime = new Date()
+  }
+  else {
+    modifyParkingInfoTitle.value = 'Modify the Parking Info'
+    modifyParkingInfoButtonText.value = 'Modify'
+  }
+  modifyParkingInfoDialog.value = true
 }
 
 const centerPoint = computed(() => {
@@ -58,12 +71,38 @@ const estimateCost = computed(() => {
 setInterval(() => {
   computedTrigger.value++
 }, 60000)
+
+function disablePreviousDate(ts: number) {
+  return ts < new Date(props.parkingInfo.startTime).getTime()
+}
+async function onExitParkingLot() {
+  const parkingInfo = props.parkingInfo
+  if (!parkingInfo) {
+    message.error('Getting parking info failed')
+    return
+  }
+  modifyParkingInfoDialogLoading.value = true
+  parkingInfo!.startTime = new Date(parkingDateRange.value[0])
+  parkingInfo!.endTime = new Date(parkingDateRange.value[1] ?? parkingDateRange.value[0])
+  parkingInfo!.expectedCost = estimateCost.value
+  parkingInfo!.actualCost = modifyParkingInfoModel.value.actualCost
+  try {
+    await parkingService.addOrUpdateParkingInfo(parkingInfo!)
+    message.success('Update parking info successful')
+    await emits('onItemUpdated')
+    modifyParkingInfoDialog.value = false
+  }
+  catch (error) {
+    message.error('Update parking info failed')
+  }
+  modifyParkingInfoDialogLoading.value = false
+}
 </script>
 
 <template>
   <v-card
     class="mx-auto"
-    max-width="500"
+    max-width="400"
   >
     <div class="map-page-container">
       <el-amap
@@ -124,14 +163,76 @@ setInterval(() => {
     </div>
 
     <v-card-actions>
-      <v-btn v-if="isStillParking" @click="onExitParkingLot">
+      <v-btn v-if="isStillParking" @click="openModifyParkingInfoDialog">
         Exit Parking Lot
       </v-btn>
-      <v-btn v-else @click="onExitParkingLot">
+      <v-btn v-else @click="openModifyParkingInfoDialog">
         Modify
       </v-btn>
     </v-card-actions>
   </v-card>
+  <v-dialog
+    v-model="modifyParkingInfoDialog"
+    fullscreen
+    :scrim="false"
+    transition="dialog-bottom-transition"
+    :z-index="1999"
+  >
+    <v-card :loading="modifyParkingInfoDialogLoading">
+      <template #loader="{ isActive }">
+        <v-progress-linear
+          :active="isActive"
+          color="deep-purple"
+          height="4"
+          indeterminate
+        />
+      </template>
+      <v-toolbar
+        dark
+        color="primary"
+      >
+        <v-btn
+          icon
+          dark
+          @click="modifyParkingInfoDialog = false"
+        >
+          <i class="fa-solid fa-xmark" />
+        </v-btn>
+        <v-toolbar-title>{{ modifyParkingInfoTitle }}</v-toolbar-title>
+      </v-toolbar>
+      <v-form ref="modifyParkingInfoForm">
+        <v-list lines="one">
+          <v-list-item title="Parking Date">
+            <template #subtitle>
+              <n-date-picker v-model:value="parkingDateRange[0]" :actions="null" update-value-on-close :to="modifyParkingInfoForm!" type="datetime" />
+            </template>
+          </v-list-item>
+          <v-list-item title="Exit Date">
+            <template #subtitle>
+              <n-date-picker v-model:value="parkingDateRange[1]" :actions="null" update-value-on-close :to="modifyParkingInfoForm!" type="datetime" clearable :is-date-disabled="disablePreviousDate" />
+            </template>
+          </v-list-item>
+          <v-list-item title="Actual Cost">
+            <template #subtitle>
+              <n-input-number
+                v-model:value="modifyParkingInfoModel.actualCost"
+                :default-value="0"
+              />
+            </template>
+          </v-list-item>
+        </v-list>
+        <div class="d-flex flex-column">
+          <v-btn
+            class="mt-4"
+            block
+            @click="onExitParkingLot"
+          >
+            {{ modifyParkingInfoButtonText }}
+          </v-btn>
+        </div>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style lang="less">

@@ -12,7 +12,7 @@
       <router-link to="/parking-lot" mx-2>
         <i class="fa-solid fa-square-parking" />
       </router-link>
-      <router-link to="/parking" mx-2>
+      <router-link to="/" mx-2>
         <i class="fa-solid fa-car" />
       </router-link>
     </div>

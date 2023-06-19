@@ -89,6 +89,9 @@ const isStillParking = computed(() => {
 
   return latestParkingInfo.startTime === latestParkingInfo.endTime
 })
+async function onItemUpdated() {
+  await refreshAllParkingInfo()
+}
 onMounted(() => {
   init()
 })
@@ -96,13 +99,13 @@ onMounted(() => {
 
 <template>
   <div flex justify-center w-full py-4>
-    <v-btn v-if="isStillParking" border rounded="xl" size="x-large" @click="onParking">
+    <v-btn v-if="!isStillParking" border rounded="xl" size="x-large" @click="onParking">
       <i class="fa-solid fa-square-parking" />
     </v-btn>
   </div>
   <ul>
     <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
-      <ParkingInfoItem :parking-info="parkingInfo" />
+      <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
     </li>
   </ul>
   <v-dialog

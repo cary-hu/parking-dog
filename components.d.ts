@@ -13,6 +13,7 @@ declare module 'vue' {
     Home: typeof import('./src/pages/Home.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NDatePicker: typeof import('naive-ui')['NDatePicker']
+    NInputNumber: typeof import('naive-ui')['NInputNumber']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']
     ParkingInfoItem: typeof import('./src/components/ParkingInfoItem.vue')['default']

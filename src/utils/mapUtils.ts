@@ -1,9 +1,9 @@
 import * as turf from '@turf/turf'
 
 export class MapUtils {
-  public static _distance(pointA: Array<number>, pointB: Array<number>) {
-    const from = turf.turfHelper.point(pointA)
-    const to = turf.turfHelper.point(pointB)
+  public static _distance(pointA: Array<number>, pointB: Array<number>): number {
+    const from = turf.point(pointA)
+    const to = turf.point(pointB)
 
     return turf.distance(from, to)
   }

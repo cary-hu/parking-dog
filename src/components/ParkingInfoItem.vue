@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const emits = defineEmits(['onItemUpdated'])
 const message = useMessage()
-const modifyParkingInfoDialog = ref(true)
+const modifyParkingInfoDialog = ref(false)
 const modifyParkingInfoDialogLoading = ref(false)
 const modifyParkingInfoForm = ref(null)
 const modifyParkingInfoTitle = ref('')
@@ -235,7 +235,7 @@ async function onExitParkingLot() {
   </v-dialog>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .map-page-container {
   height: 300px;
   width: 100%;

@@ -47,17 +47,17 @@ async function removeParkingLots() {
     </v-card-item>
 
     <v-card-actions>
-      <v-btn>
+      <v-btn variant="plain" rounded="xl" color="blue-darken-4" @click="removeParkingLots">
         Remove
       </v-btn>
-      <v-btn>
+      <v-btn variant="plain" rounded="xl" color="blue-darken-4">
         Modify
       </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .map-page-container {
   height: 300px;
   width: 100%;

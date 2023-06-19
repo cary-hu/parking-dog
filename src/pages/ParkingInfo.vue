@@ -98,61 +98,63 @@ onMounted(() => {
 </script>
 
 <template>
-  <div flex justify-center w-full py-4>
-    <v-btn v-if="!isStillParking" border rounded="xl" size="x-large" @click="onParking">
-      <i class="fa-solid fa-square-parking" />
-    </v-btn>
-  </div>
-  <ul>
-    <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
-      <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
-    </li>
-  </ul>
-  <v-dialog
-    v-model="addParkingInfoDialog"
-    fullscreen
-    :scrim="false"
-    transition="dialog-bottom-transition"
-  >
-    <v-card>
-      <v-toolbar
-        dark
-        color="primary"
-      >
-        <v-btn
-          icon
+  <div>
+    <div flex justify-center w-full py-4>
+      <v-btn v-if="!isStillParking" border rounded="xl" size="x-large" @click="onParking">
+        <i class="fa-solid fa-square-parking" />
+      </v-btn>
+    </div>
+    <ul>
+      <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
+        <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
+      </li>
+    </ul>
+    <v-dialog
+      v-model="addParkingInfoDialog"
+      fullscreen
+      :scrim="false"
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-toolbar
           dark
-          @click="addParkingInfoDialog = false"
+          color="primary"
         >
-          <i class="fa-solid fa-xmark" />
-        </v-btn>
-        <v-toolbar-title>Parking My Dog</v-toolbar-title>
-      </v-toolbar>
-      <v-form ref="addParkingInfoForm">
-        <v-combobox
-          v-model="addParkingInfo.parkingLot"
-          :items="allParkingLots"
-          item-title="name"
-          item-value="id"
-          :hint="`${addParkingInfo?.parkingLot?.cost?.price} Yuan per ${addParkingInfo?.parkingLot?.cost?.per} ${addParkingInfo?.parkingLot?.cost?.period}`"
-          :rules="[(v: ParkingLotInfo) => !!v || 'Item is required']"
-          label="Parking Lot"
-          persistent-hint
-          return-object
-          required
-        />
-        <div class="d-flex flex-column">
           <v-btn
-            class="mt-4"
-            block
-            @click="parkingMyDog"
+            icon
+            dark
+            @click="addParkingInfoDialog = false"
           >
-            Parking
+            <i class="fa-solid fa-xmark" />
           </v-btn>
-        </div>
-      </v-form>
-    </v-card>
-  </v-dialog>
+          <v-toolbar-title>Parking My Dog</v-toolbar-title>
+        </v-toolbar>
+        <v-form ref="addParkingInfoForm">
+          <v-combobox
+            v-model="addParkingInfo.parkingLot"
+            :items="allParkingLots"
+            item-title="name"
+            item-value="id"
+            :hint="`${addParkingInfo?.parkingLot?.cost?.price} Yuan per ${addParkingInfo?.parkingLot?.cost?.per} ${addParkingInfo?.parkingLot?.cost?.period}`"
+            :rules="[(v: ParkingLotInfo) => !!v || 'Item is required']"
+            label="Parking Lot"
+            persistent-hint
+            return-object
+            required
+          />
+          <div class="d-flex flex-column">
+            <v-btn
+              class="mt-4"
+              block
+              @click="parkingMyDog"
+            >
+              Parking
+            </v-btn>
+          </div>
+        </v-form>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <style lang="less">

@@ -22,7 +22,7 @@ const geolocationOptions = {
   maximumAge: 0,
 }
 
-async function getParkingLots() {
+async function refreshParkingLots() {
   allParkingLots.value = await parkingLotService.getParkingLots()
 }
 async function addParkingLots() {
@@ -72,6 +72,7 @@ function draw(pos: number[]) {
 
 async function init() {
   await parkingLotService.ensureParkingLotBasket()
+  await refreshParkingLots()
 }
 
 onMounted(() => {
@@ -80,7 +81,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1>Parking Lot</h1>
   <v-dialog
     v-model="addParkingLotDialog"
     fullscreen
@@ -180,15 +180,13 @@ onMounted(() => {
       </v-form>
     </v-card>
   </v-dialog>
-  <v-btn mx-2>
-    Update Parking Lot
-  </v-btn>
-  <v-btn @click="getParkingLots">
-    Get All Parking Lot
-  </v-btn>
-  <div>
-    <ParkingLotItem v-for="parkingLot in allParkingLots" :key="parkingLot.id" :item="parkingLot" />
-  </div>
+  <v-container>
+    <v-row>
+      <v-col v-for="parkingLot in allParkingLots" :key="parkingLot.id">
+        <ParkingLotItem :parking-lot-info="parkingLot" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style>

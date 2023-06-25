@@ -3,6 +3,8 @@ import { ParkingLotInfo } from '@/@types/parkingLot'
 import { MapUtils } from '@/utils/mapUtils'
 import parkingLotService from '@/services/parkingLotService'
 
+const message = useMessage()
+
 const allParkingLots = ref<ParkingLotInfo[]>([])
 const addParkingLotDialog = ref(false)
 const addParkingLotFormValid = ref(false)
@@ -31,10 +33,12 @@ async function addParkingLots() {
   addParkingLotLoading.value = true
   try {
     await parkingLotService.addOrUpdateParkingLot(addParkingLotData.value)
+    await refreshParkingLots()
+    message.success('Add new parking lot successful')
     addParkingLotDialog.value = false
   }
   catch (error) {
-
+    message.warning('Add new parking lot failed')
   }
   addParkingLotLoading.value = false
 }
@@ -95,7 +99,7 @@ onMounted(() => {
         </v-col>
       </v-row>
       <v-row v-if="parkingLotsLoading">
-        <v-col v-for="index in 10" :key="index">
+        <v-col v-for="index in 6" :key="index">
           <n-skeleton height="140px" width="572px" />
         </v-col>
       </v-row>

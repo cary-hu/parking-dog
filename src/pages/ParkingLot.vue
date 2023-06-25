@@ -183,7 +183,7 @@ onMounted(() => {
     <v-container>
       <v-row>
         <v-col v-for="parkingLot in allParkingLots" :key="parkingLot.id">
-          <ParkingLotItem :parking-lot-info="parkingLot" />
+          <ParkingLotItem :parking-lot-info="parkingLot" @onItemRemoved="refreshParkingLots" />
         </v-col>
       </v-row>
     </v-container>

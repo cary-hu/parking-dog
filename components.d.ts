@@ -15,6 +15,8 @@ declare module 'vue' {
     NDatePicker: typeof import('naive-ui')['NDatePicker']
     NInputNumber: typeof import('naive-ui')['NInputNumber']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
+    NPopconfirm: typeof import('naive-ui')['NPopconfirm']
+    NSpace: typeof import('naive-ui')['NSpace']
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']
     ParkingInfoItem: typeof import('./src/components/ParkingInfoItem.vue')['default']
     ParkingLot: typeof import('./src/pages/ParkingLot.vue')['default']

@@ -24,4 +24,11 @@ initAMapApiLoader({
 })
 app.use(router)
 app.use(vuetify)
+
+/**
+ * https://www.naiveui.com/zh-CN/os-theme/docs/style-conflict
+ */
+const meta = document.createElement('meta')
+meta.name = 'naive-ui-style'
+document.head.appendChild(meta)
 app.mount('body')

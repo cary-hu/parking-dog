@@ -7,6 +7,8 @@ const props = defineProps<{
   parkingLotInfo: ParkingLotInfo
 }>()
 
+const emits = defineEmits(['onItemRemoved'])
+const message = useMessage()
 const centerPoint = computed(() => {
   return [props.parkingLotInfo.location.lng, props.parkingLotInfo.location.lat]
 })
@@ -23,8 +25,18 @@ const parkingLotCost = computed(() => {
   return `${parkingLotInfoCost?.price} Yuan per ${parkingLotInfoCost?.per} ${parkingLotInfoCost?.period}`
 })
 
+const removeParkingLotLoading = ref(false)
 async function removeParkingLots() {
-  await parkingLotService.removeParkingLot(props.parkingLotInfo!.id)
+  removeParkingLotLoading.value = true
+  try {
+    await parkingLotService.removeParkingLot(props.parkingLotInfo!.id)
+    emits('onItemRemoved')
+    message.success(`Remove ${props.parkingLotInfo.name} successful`)
+  }
+  catch (error) {
+    message.error(`Remove ${props.parkingLotInfo.name} failed`)
+  }
+  removeParkingLotLoading.value = false
 }
 </script>
 
@@ -47,12 +59,16 @@ async function removeParkingLots() {
     </v-card-item>
 
     <v-card-actions>
-      <v-btn variant="plain" rounded="xl" color="blue-darken-4" @click="removeParkingLots">
-        Remove
-      </v-btn>
-      <v-btn variant="plain" rounded="xl" color="blue-darken-4">
-        Modify
-      </v-btn>
+      <n-space>
+        <n-popconfirm @positive-click="removeParkingLots">
+          <template #trigger>
+            <n-button secondary round type="warning" bordered :loading="removeParkingLotLoading">
+              Remove
+            </n-button>
+          </template>
+          Are you sure?
+        </n-popconfirm>
+      </n-space>
     </v-card-actions>
   </v-card>
 </template>

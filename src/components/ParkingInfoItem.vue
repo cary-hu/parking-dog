@@ -60,8 +60,7 @@ function getMinute(time: Date, twoTime: Date, value = 0) {
 
 const computedTrigger = ref(0)
 const estimateCost = computed(() => {
-  const a = computedTrigger.value + 1
-  if (a > 0) {
+  if (computedTrigger.value + 1 > 0) {
     // do nothing
   }
   if (props.parkingInfo?.startTime !== props.parkingInfo?.endTime)
@@ -84,7 +83,7 @@ async function onExitParkingLot() {
   modifyParkingInfoDialogLoading.value = true
   parkingInfo!.startTime = new Date(parkingDateRange.value[0])
   parkingInfo!.endTime = new Date(parkingDateRange.value[1] ?? parkingDateRange.value[0])
-  parkingInfo!.expectedCost = estimateCost.value
+  parkingInfo!.expectedCost = parkingUtils.calcEstimateCost(getMinute(parkingInfo!.startTime, parkingInfo!.endTime), props.parkingInfo!.parkingLot.cost)
   parkingInfo!.actualCost = modifyParkingInfoModel.value.actualCost
   try {
     await parkingService.addOrUpdateParkingInfo(parkingInfo!)

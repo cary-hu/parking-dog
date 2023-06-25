@@ -19,7 +19,7 @@ const modifyParkingInfoModel = ref<ParkingInfo>(new ParkingInfo())
 const parkingDateRange = ref<[number, number]>([new Date(props.parkingInfo.startTime).getTime(), Date.now()])
 
 function openModifyParkingInfoDialog() {
-  modifyParkingInfoModel.value = props.parkingInfo
+  modifyParkingInfoModel.value = JSON.parse(JSON.stringify(props.parkingInfo))
   if (props.parkingInfo.startTime === props.parkingInfo.endTime) {
     modifyParkingInfoTitle.value = 'Exit Parking Lot'
     modifyParkingInfoButtonText.value = 'Exit'
@@ -66,6 +66,26 @@ const estimateCost = computed(() => {
   if (props.parkingInfo?.startTime !== props.parkingInfo?.endTime)
     return props.parkingInfo?.expectedCost
   return parkingUtils.calcEstimateCost(getMinute(props.parkingInfo!.startTime, new Date()), props.parkingInfo!.parkingLot.cost)
+})
+const currentPeriod = computed(() => {
+  if (computedTrigger.value + 1 > 0) {
+    // do nothing
+  }
+  if (props.parkingInfo?.startTime !== props.parkingInfo?.endTime)
+    return parkingUtils.calcPeriod(getMinute(props.parkingInfo!.startTime, props.parkingInfo!.endTime), props.parkingInfo!.parkingLot.cost)
+  return parkingUtils.calcPeriod(getMinute(props.parkingInfo!.startTime, new Date()), props.parkingInfo!.parkingLot.cost)
+})
+const progressColor = computed(() => {
+  const currentRestPeriod = (currentPeriod.value - Math.floor(currentPeriod.value)) * 100
+  let color = 'red'
+  if (currentRestPeriod > 20)
+    color = 'pink'
+  if (currentRestPeriod > 40)
+    color = 'primary'
+  if (currentRestPeriod > 80)
+    color = 'teal'
+
+  return color
 })
 setInterval(() => {
   computedTrigger.value++
@@ -146,7 +166,22 @@ async function onExitParkingLot() {
       <v-list-item
         density="compact"
       >
-        <v-list-item-subtitle><i class="fa-regular fa-clock me-2" />{{ $dayjs(parkingInfo?.startTime).format("YYYY-MM-DD HH:mm:ss") }}</v-list-item-subtitle>
+        <v-list-item-subtitle>
+          <div flex items-center>
+            <v-progress-circular
+              v-if="isStillParking"
+              :model-value="(currentPeriod - Math.floor(currentPeriod)) * 100"
+              :size="60"
+              :width="7"
+              :color="progressColor"
+            >
+              {{ Math.floor(currentPeriod) }}
+            </v-progress-circular>
+            <div ms-1>
+              <i class="fa-regular fa-clock me-2" />{{ $dayjs(parkingInfo?.startTime).format("YYYY-MM-DD HH:mm:ss") }}
+            </div>
+          </div>
+        </v-list-item-subtitle>
       </v-list-item>
 
       <v-list-item
@@ -188,7 +223,6 @@ async function onExitParkingLot() {
       </template>
       <v-toolbar
         dark
-        color="primary"
       >
         <v-btn
           icon

@@ -58,7 +58,10 @@ async function initAllParkingLot() {
     loadingMessage.content = 'Loading parking lot failed.'
   }
 }
+
+const parkingInfoLoading = ref(true)
 async function refreshAllParkingInfo() {
+  parkingInfoLoading.value = true
   const loadingMessage = message.loading('Loading parking info', {
     closable: false,
     duration: 0,
@@ -76,6 +79,7 @@ async function refreshAllParkingInfo() {
     loadingMessage.type = 'error'
     loadingMessage.content = 'Loading parking ParkingInfo failed.'
   }
+  parkingInfoLoading.value = false
 }
 async function init() {
   await parkingService.ensureParkingInfoBasket()
@@ -99,12 +103,17 @@ onMounted(() => {
 
 <template>
   <div>
+    <ul v-if="parkingInfoLoading">
+      <li v-for="index in 3" :key="index" flex justify-center>
+        <n-skeleton height="330px" width="400px" />
+      </li>
+    </ul>
     <div flex justify-center w-full py-4>
-      <v-btn v-if="!isStillParking" border rounded="xl" size="x-large" @click="onParking">
+      <v-btn v-if="!isStillParking && !parkingInfoLoading" border rounded="xl" size="x-large" @click="onParking">
         <i class="fa-solid fa-square-parking" />
       </v-btn>
     </div>
-    <ul>
+    <ul v-if="!parkingInfoLoading">
       <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
         <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
       </li>
@@ -157,7 +166,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 ul {
   list-style: none;
   li {

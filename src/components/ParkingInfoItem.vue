@@ -189,7 +189,7 @@ async function onExitParkingLot() {
         density="compact"
       >
         <v-list-item-subtitle>
-          <span>
+          <span ms-1>
             <i class="fa-solid fa-stopwatch me-2" />{{ $dayjs(parkingInfo?.endTime).format("YYYY-MM-DD HH:mm:ss") }}
           </span>
         </v-list-item-subtitle>
@@ -286,8 +286,8 @@ async function onExitParkingLot() {
     height: 100%;
     background: linear-gradient(53deg, #ffffff 25%, rgba(255, 255, 255, 0) 89%);
   }
-  .amap-copyright,
-  .amap-logo {
+  &:deep(.amap-copyright),
+  &:deep(.amap-logo) {
     display: none !important;
   }
 

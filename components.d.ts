@@ -16,6 +16,7 @@ declare module 'vue' {
     NInputNumber: typeof import('naive-ui')['NInputNumber']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
+    NSkeleton: typeof import('naive-ui')['NSkeleton']
     NSpace: typeof import('naive-ui')['NSpace']
     ParkingInfo: typeof import('./src/pages/ParkingInfo.vue')['default']
     ParkingInfoItem: typeof import('./src/components/ParkingInfoItem.vue')['default']

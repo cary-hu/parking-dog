@@ -21,9 +21,11 @@ const geolocationOptions = {
   timeout: 5000,
   maximumAge: 0,
 }
-
+const parkingLotsLoading = ref(true)
 async function refreshParkingLots() {
+  parkingLotsLoading.value = true
   allParkingLots.value = await parkingLotService.getParkingLots()
+  parkingLotsLoading.value = false
 }
 async function addParkingLots() {
   addParkingLotLoading.value = true
@@ -84,12 +86,25 @@ onMounted(() => {
 
 <template>
   <div>
-    <v-btn
-      variant="elevated"
-      @click="onOpenAddParkingLotDialog"
-    >
-      Add Parking Lot
-    </v-btn>
+    <v-container>
+      <v-row justify="center">
+        <v-col align="center">
+          <n-button round type="primary" size="large" @click="onOpenAddParkingLotDialog">
+            <i class="fa-solid fa-plus" />
+          </n-button>
+        </v-col>
+      </v-row>
+      <v-row v-if="parkingLotsLoading">
+        <v-col v-for="index in 10" :key="index">
+          <n-skeleton height="140px" width="572px" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col v-for="parkingLot in allParkingLots" :key="parkingLot.id">
+          <ParkingLotItem :parking-lot-info="parkingLot" @onItemRemoved="refreshParkingLots" />
+        </v-col>
+      </v-row>
+    </v-container>
     <v-dialog
       v-model="addParkingLotDialog"
       fullscreen
@@ -180,13 +195,6 @@ onMounted(() => {
         </v-form>
       </v-card>
     </v-dialog>
-    <v-container>
-      <v-row>
-        <v-col v-for="parkingLot in allParkingLots" :key="parkingLot.id">
-          <ParkingLotItem :parking-lot-info="parkingLot" @onItemRemoved="refreshParkingLots" />
-        </v-col>
-      </v-row>
-    </v-container>
   </div>
 </template>
 

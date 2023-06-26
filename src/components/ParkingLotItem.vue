@@ -91,8 +91,8 @@ async function removeParkingLots() {
     height: 100%;
     background: linear-gradient(53deg, #ffffff 25%, rgba(255, 255, 255, 0) 89%);
   }
-  .amap-copyright,
-  .amap-logo {
+  &:deep(.amap-copyright),
+  &:deep(.amap-logo)  {
     display: none !important;
   }
 

@@ -288,56 +288,6 @@ const remainTips = computed(() => {
 </template>
 
 <style lang="less" scoped>
-.map-page-container {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: -1;
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(53deg, #ffffff 25%, rgba(255, 255, 255, 0) 89%);
-  }
-  &:deep(.amap-copyright),
-  &:deep(.amap-logo) {
-    display: none !important;
-  }
-
-  &:deep(.amap-marker) {
-    width: 16px;
-    height: 16px;
-    background-color: #38bdf8;
-    border-radius: 50%;
-    position: relative;
-    img {
-      display: none;
-    }
-    &::before,
-    &::after {
-      content: '';
-      display: block;
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      background: #38bdf8;
-      transition: 5s ease;
-      position: absolute;
-      top: 0px;
-      animation: waves 2.5s infinite;
-    }
-
-    &::before {
-      animation-delay: 1s;
-    }
-  }
-}
 .parking-card-container {
     --marginX: 1rem;
 
@@ -379,17 +329,5 @@ const remainTips = computed(() => {
       display: inline-block;
       text-align: center;
     }
-}
-
-@keyframes waves {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(14);
-    opacity: 0;
-  }
 }
 </style>

@@ -72,29 +72,3 @@ async function removeParkingLots() {
     </v-card-actions>
   </v-card>
 </template>
-
-<style lang="less" scoped>
-.map-page-container {
-  height: 300px;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: -1;
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(53deg, #ffffff 25%, rgba(255, 255, 255, 0) 89%);
-  }
-  &:deep(.amap-copyright),
-  &:deep(.amap-logo)  {
-    display: none !important;
-  }
-
-}
-</style>

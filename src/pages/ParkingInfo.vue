@@ -105,7 +105,7 @@ onMounted(() => {
   <div>
     <ul v-if="parkingInfoLoading">
       <li v-for="index in 3" :key="index" flex justify-center>
-        <n-skeleton height="330px" width="400px" />
+        <n-skeleton height="330px" width="98%" />
       </li>
     </ul>
     <div flex justify-center w-full py-4>

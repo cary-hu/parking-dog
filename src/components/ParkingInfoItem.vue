@@ -336,9 +336,6 @@ const remainTips = computed(() => {
     &::before {
       animation-delay: 1s;
     }
-
-    &::after {
-    }
   }
 }
 .parking-card-container {
@@ -384,14 +381,14 @@ const remainTips = computed(() => {
     }
 }
 
-@-webkit-keyframes waves {
+@keyframes waves {
   0% {
     transform: scale(1);
     opacity: 1;
   }
 
   100% {
-    transform: scale(4);
+    transform: scale(14);
     opacity: 0;
   }
 }

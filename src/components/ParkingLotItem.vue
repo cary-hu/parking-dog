@@ -38,6 +38,10 @@ async function removeParkingLots() {
   }
   removeParkingLotLoading.value = false
 }
+
+function openNavigation() {
+  window.open(MapUtils.getAMapNavigationURI([props.parkingLotInfo.location.lng, props.parkingLotInfo.location.lat], props.parkingLotInfo.name), '_blank')
+}
 </script>
 
 <template>
@@ -60,6 +64,9 @@ async function removeParkingLots() {
 
     <v-card-actions>
       <n-space>
+        <n-button secondary round type="info" bordered @click="openNavigation">
+          <i class="me-2 fa-solid fa-map-location-dot" />Navigation
+        </n-button>
         <n-popconfirm @positive-click="removeParkingLots">
           <template #trigger>
             <n-button secondary round type="warning" bordered :loading="removeParkingLotLoading">

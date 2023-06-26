@@ -135,6 +135,10 @@ const remainTips = computed(() => {
     tips = 'Getting out of the parking lot is a small gain now'
   return tips
 })
+
+function openNavigation() {
+  window.open(MapUtils.getAMapNavigationURI([props.parkingInfo.parkingLot.location.lng, props.parkingInfo.parkingLot.location.lat], props.parkingInfo.parkingLot.name), '_blank')
+}
 </script>
 
 <template>
@@ -221,6 +225,9 @@ const remainTips = computed(() => {
       </v-btn>
       <v-btn v-else @click="openModifyParkingInfoDialog">
         Modify
+      </v-btn>
+      <v-btn ms-2 @click="openNavigation">
+        <i class="fa-solid fa-map-location-dot"></i>Navigation
       </v-btn>
     </div>
   </div>

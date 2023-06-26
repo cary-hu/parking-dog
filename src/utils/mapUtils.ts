@@ -13,4 +13,18 @@ export class MapUtils {
     const translatedPoly = turf.transformTranslate(poly, distance, direction)
     return translatedPoly.geometry.coordinates[0][0]
   }
+
+  public static getAMapNavigationURI(end: [number, number], endName: string) {
+    const start: [number, number] = [0, 0]
+    const startName = 'My Position'
+    navigator.geolocation.getCurrentPosition((pos) => {
+      start[0] = pos.coords.longitude
+      start[1] = pos.coords.latitude
+    }, null, {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    })
+    return `https//uri.amap.com/navigation?from=${start[0]},${start[1]},${startName}&to=${end[0]},${end[1]},${endName}&mode=car&policy=0&callnative=1`
+  }
 }

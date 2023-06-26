@@ -147,7 +147,7 @@ const remainTips = computed(() => {
     <div class="parking-card-content-container px-3 pb-2">
       <div class="map-page-container">
         <el-amap
-          :center="MapUtils._transform(centerPoint, 0.14, 275)"
+          :center="MapUtils._transform(centerPoint, 0.14, 255)"
           :zoom="17"
           @init="mapInit"
         />
@@ -309,6 +309,37 @@ const remainTips = computed(() => {
   &:deep(.amap-logo) {
     display: none !important;
   }
+
+  &:deep(.amap-marker) {
+    width: 16px;
+    height: 16px;
+    background-color: #38bdf8;
+    border-radius: 50%;
+    position: relative;
+    img {
+      display: none;
+    }
+    &::before,
+    &::after {
+      content: '';
+      display: block;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #38bdf8;
+      transition: 5s ease;
+      position: absolute;
+      top: 0px;
+      animation: waves 2.5s infinite;
+    }
+
+    &::before {
+      animation-delay: 1s;
+    }
+
+    &::after {
+    }
+  }
 }
 .parking-card-container {
     --marginX: 1rem;
@@ -351,5 +382,17 @@ const remainTips = computed(() => {
       display: inline-block;
       text-align: center;
     }
+}
+
+@-webkit-keyframes waves {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
 </style>

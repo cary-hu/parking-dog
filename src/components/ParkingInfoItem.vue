@@ -75,15 +75,17 @@ const currentPeriod = computed(() => {
     return parkingUtils.calcPeriod(getMinute(props.parkingInfo!.startTime, props.parkingInfo!.endTime), props.parkingInfo!.parkingLot.cost)
   return parkingUtils.calcPeriod(getMinute(props.parkingInfo!.startTime, new Date()), props.parkingInfo!.parkingLot.cost)
 })
-const progressColor = computed(() => {
+
+type progressType = 'default' | 'error' | 'success' | 'warning' | 'info' | undefined
+const progressColor = computed<progressType>(() => {
   const currentRestPeriod = (currentPeriod.value - Math.floor(currentPeriod.value)) * 100
-  let color = 'red'
+  let color: progressType = 'error'
   if (currentRestPeriod > 20)
-    color = 'pink'
+    color = 'warning'
   if (currentRestPeriod > 40)
-    color = 'primary'
+    color = 'info'
   if (currentRestPeriod > 80)
-    color = 'teal'
+    color = 'success'
 
   return color
 })
@@ -116,95 +118,112 @@ async function onExitParkingLot() {
   }
   modifyParkingInfoDialogLoading.value = false
 }
+
+const currentCycleRemain = computed(() => {
+  return Number.parseFloat(((currentPeriod.value - Math.floor(currentPeriod.value)) * 100).toFixed(2))
+})
+const remainTips = computed(() => {
+  let tips = 'It\'s a good deal to exit the parking lot now'
+  if (currentCycleRemain.value <= 10)
+    tips = 'It\'s not worth the money to exit the parking lot now'
+
+  if (currentCycleRemain.value <= 20)
+    tips = 'Exiting the parking lot now is a bit of a waste'
+  if (currentCycleRemain.value <= 50)
+    tips = 'It\'s not too bad to exit the parking lot now'
+  if (currentCycleRemain.value <= 70)
+    tips = 'Getting out of the parking lot is a small gain now'
+  return tips
+})
 </script>
 
 <template>
-  <v-card
-    class="mx-auto"
-    max-width="400"
-  >
-    <div class="map-page-container">
-      <el-amap
-        :center="MapUtils._transform(centerPoint, 0.14, 245)"
-        :zoom="17"
-        @init="mapInit"
-      />
+  <div class="parking-card-container">
+    <div class="parking-card-header">
+      <span h-full flex items-center text-7><i class="me-2 fa-solid fa-square-parking" /></span>
+      <span h-full flex items-center me-2 text-5>{{ parkingInfo?.parkingLot.name }}</span>
+      <span h-full flex items-center me-2 text-4 text-gray-400>{{ parkingLotCost }}</span>
     </div>
-    <v-card-item>
-      <template #title>
-        <span text-6 block><i class="me-2 fa-solid fa-square-parking" />{{ parkingInfo?.parkingLot.name }}</span>
-        <span text-3>Price: {{ parkingLotCost }}</span>
-      </template>
-      <template #subtitle>
-        <div class="py-2" text-3 text-slate-950>
-          <div v-if="!isStillParking">
-            <span>Actual: {{ parkingInfo?.actualCost }} Yuan</span>
-          </div>
-          <div>
-            <span>Estimate: {{ estimateCost }} Yuan</span>
-          </div>
+    <div class="parking-card-content-container px-3 pb-2">
+      <div class="map-page-container">
+        <el-amap
+          :center="MapUtils._transform(centerPoint, 0.14, 275)"
+          :zoom="17"
+          @init="mapInit"
+        />
+      </div>
+      <div flex pt-3>
+        <div me-3>
+          <n-timeline>
+            <n-timeline-item
+              title="Start Parking"
+              :time="$dayjs(parkingInfo?.startTime).format('YYYY-MM-DD HH:mm:ss')"
+              :line-type="isStillParking ? 'dashed' : 'default'"
+            >
+              <template #icon>
+                <i class="fa-regular fa-clock" />
+              </template>
+            </n-timeline-item>
+            <n-timeline-item
+              :title="isStillParking ? 'Still Parking' : 'End Parking'"
+              :time="isStillParking ? '' : $dayjs(parkingInfo?.endTime).format('YYYY-MM-DD HH:mm:ss')"
+              line-type="dashed"
+            >
+              <template #icon>
+                <i class="fa-solid fa-stopwatch" />
+              </template>
+            </n-timeline-item>
+          </n-timeline>
         </div>
-      </template>
-    </v-card-item>
-
-    <v-card-text class="py-0">
-      <v-row no-gutters>
-        <v-col
-          class="text-h2"
-        >
+        <div text-11>
           <span v-if="parkingInfo?.startTime === parkingInfo?.endTime">
             {{ $dayjs(parkingInfo?.startTime).toNow(true) }}
           </span>
           <span v-else>
             {{ $dayjs(parkingInfo?.startTime).to(parkingInfo?.endTime, true) }}
           </span>
-        </v-col>
-      </v-row>
-    </v-card-text>
+        </div>
+      </div>
 
-    <div class="py-3">
-      <v-list-item
-        density="compact"
-      >
-        <v-list-item-subtitle>
-          <div flex items-center>
-            <v-progress-circular
-              v-if="isStillParking"
-              :model-value="(currentPeriod - Math.floor(currentPeriod)) * 100"
-              :size="60"
-              :width="7"
-              :color="progressColor"
-            >
-              {{ Math.floor(currentPeriod) }}
-            </v-progress-circular>
-            <div ms-1>
-              <i class="fa-regular fa-clock me-2" />{{ $dayjs(parkingInfo?.startTime).format("YYYY-MM-DD HH:mm:ss") }}
-            </div>
-          </div>
-        </v-list-item-subtitle>
-      </v-list-item>
-
-      <v-list-item
-        v-if="!isStillParking"
-        density="compact"
-      >
-        <v-list-item-subtitle>
-          <span ms-1>
-            <i class="fa-solid fa-stopwatch me-2" />{{ $dayjs(parkingInfo?.endTime).format("YYYY-MM-DD HH:mm:ss") }}
-          </span>
-        </v-list-item-subtitle>
-      </v-list-item>
+      <div flex items-center text-3 text-slate-950 my-5>
+        <n-statistic v-if="!isStillParking" me-5 label="Actual Cost">
+          <template #prefix>
+            <i class=" fa-solid fa-coins" />
+          </template>
+          {{ `${parkingInfo?.actualCost} Yuan` }}
+        </n-statistic>
+        <n-statistic label="Estimate Cost">
+          <template #prefix>
+            <i class=" fa-solid fa-chart-line" />
+          </template>
+          {{ estimateCost }} Yuan
+        </n-statistic>
+      </div>
+      <n-alert :type="progressColor" :show-icon="false">
+        <n-progress
+          type="line"
+          :percentage="currentCycleRemain"
+          :height="16"
+          :color="progressColor"
+          :status="progressColor"
+          rail-color="white"
+          indicator-placement="inside"
+          :processing="isStillParking"
+        />
+        <span block>Parking {{ Math.floor(currentPeriod) }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}% remaining in the current period.</span>
+        <span block>{{ remainTips }}</span>
+      </n-alert>
     </div>
 
-    <v-card-actions>
+    <div class="parking-card-footer">
       <v-btn v-if="isStillParking" @click="openModifyParkingInfoDialog">
         Exit Parking Lot
       </v-btn>
       <v-btn v-else @click="openModifyParkingInfoDialog">
         Modify
       </v-btn>
-    </v-card-actions>
-  </v-card>
+    </div>
+  </div>
   <v-dialog
     v-model="modifyParkingInfoDialog"
     fullscreen
@@ -270,7 +289,7 @@ async function onExitParkingLot() {
 
 <style lang="less" scoped>
 .map-page-container {
-  height: 300px;
+  height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
@@ -290,10 +309,47 @@ async function onExitParkingLot() {
   &:deep(.amap-logo) {
     display: none !important;
   }
-
 }
+.parking-card-container {
+    --marginX: 1rem;
 
-.v-card-actions {
-  background-color: #fff;
+    position: relative;
+    width: calc(100% - calc(var(--marginX) * 2));
+    height: auto;
+    min-height: 300px;
+    margin: var(--marginX);
+    border-radius: .5rem;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    overflow: hidden;
+
+    &:deep(.parking-card-footer),
+    &:deep(.parking-card-header) {
+        padding: .5rem;
+        border-bottom: 1px solid #eee;
+        height: 50px;
+        width: 100%;
+        z-index: 2;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    &:deep(.parking-card-footer) {
+      background-color: #fff;
+      height: 60px;
+    }
+
+    &:deep(.parking-card-content-container) {
+      position: relative;
+        min-height: 200px;
+        height: auto;
+        width: 100%;
+    }
+
+    &:deep(.parking-card-icon) {
+      width: 20px;
+      display: inline-block;
+      text-align: center;
+    }
 }
 </style>

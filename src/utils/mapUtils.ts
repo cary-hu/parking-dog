@@ -16,7 +16,7 @@ export class MapUtils {
 
   public static getAMapNavigationURI(end: [number, number], endName: string) {
     const start: [number, number] = [0, 0]
-    const startName = 'My Position'
+    const startName = '我的位置'
     navigator.geolocation.getCurrentPosition((pos) => {
       start[0] = pos.coords.longitude
       start[1] = pos.coords.latitude

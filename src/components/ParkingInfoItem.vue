@@ -144,9 +144,11 @@ async function openNavigation() {
 <template>
   <div class="parking-card-container">
     <div class="parking-card-header">
-      <span h-full flex items-center text-7><i class="me-2 fa-solid fa-square-parking" /></span>
-      <span h-full flex items-center me-2 text-5>{{ parkingInfo?.parkingLot.name }}</span>
-      <span h-full flex items-center me-2 text-4 text-gray-400>{{ parkingLotCost }}</span>
+      <span h-full flex items-center text-10 me-3><i class="fa-solid fa-square-parking" /></span>
+      <span>
+        <span flex items-center me-2 text-5>{{ parkingInfo?.parkingLot.name }}</span>
+        <span flex items-center me-2 text-4 text-gray-400>{{ parkingLotCost }}</span>
+      </span>
     </div>
     <div class="parking-card-content-container px-3 pb-2">
       <div class="map-page-container">
@@ -311,7 +313,7 @@ async function openNavigation() {
     &:deep(.parking-card-header) {
         padding: .5rem;
         border-bottom: 1px solid #eee;
-        height: 50px;
+        height: 70px;
         width: 100%;
         z-index: 2;
         position: relative;

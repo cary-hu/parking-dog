@@ -25,6 +25,6 @@ export class MapUtils {
       timeout: 5000,
       maximumAge: 0,
     })
-    return `https//uri.amap.com/navigation?from=${start[0]},${start[1]},${startName}&to=${end[0]},${end[1]},${endName}&mode=car&policy=0&callnative=1`
+    return `https://uri.amap.com/navigation?from=${start[0]},${start[1]},${startName}&to=${end[0]},${end[1]},${endName}&mode=car&policy=0&callnative=1`
   }
 }

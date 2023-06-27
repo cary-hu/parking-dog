@@ -14,17 +14,24 @@ export class MapUtils {
     return translatedPoly.geometry.coordinates[0][0]
   }
 
-  public static getAMapNavigationURI(end: [number, number], endName: string) {
-    const start: [number, number] = [0, 0]
-    const startName = '我的位置'
-    navigator.geolocation.getCurrentPosition((pos) => {
-      start[0] = pos.coords.longitude
-      start[1] = pos.coords.latitude
-    }, null, {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
+  public static async getAMapNavigationURI(end: [number, number], endName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      try {
+        const start: [number, number] = [0, 0]
+        const startName = '我的位置'
+        navigator.geolocation.getCurrentPosition((pos) => {
+          start[0] = pos.coords.longitude
+          start[1] = pos.coords.latitude
+          resolve(`https://uri.amap.com/navigation?from=${start[0]},${start[1]},${startName}&to=${end[0]},${end[1]},${endName}&mode=car&policy=0&callnative=1`)
+        }, null, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        })
+      }
+      catch (error) {
+        reject(error)
+      }
     })
-    return `https://uri.amap.com/navigation?from=${start[0]},${start[1]},${startName}&to=${end[0]},${end[1]},${endName}&mode=car&policy=0&callnative=1`
   }
 }

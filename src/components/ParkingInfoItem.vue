@@ -136,8 +136,8 @@ const remainTips = computed(() => {
   return tips
 })
 
-function openNavigation() {
-  window.open(MapUtils.getAMapNavigationURI([props.parkingInfo.parkingLot.location.lng, props.parkingInfo.parkingLot.location.lat], props.parkingInfo.parkingLot.name), '_blank')
+async function openNavigation() {
+  window.open(await MapUtils.getAMapNavigationURI([props.parkingInfo.parkingLot.location.lng, props.parkingInfo.parkingLot.location.lat], props.parkingInfo.parkingLot.name), '_blank')
 }
 </script>
 
@@ -227,7 +227,7 @@ function openNavigation() {
         Modify
       </v-btn>
       <v-btn ms-2 @click="openNavigation">
-        <i class="fa-solid fa-map-location-dot"></i>Navigation
+        <i class="fa-solid fa-map-location-dot" />Navigation
       </v-btn>
     </div>
   </div>

@@ -39,8 +39,8 @@ async function removeParkingLots() {
   removeParkingLotLoading.value = false
 }
 
-function openNavigation() {
-  window.open(MapUtils.getAMapNavigationURI([props.parkingLotInfo.location.lng, props.parkingLotInfo.location.lat], props.parkingLotInfo.name), '_blank')
+async function openNavigation() {
+  window.open(await MapUtils.getAMapNavigationURI([props.parkingLotInfo.location.lng, props.parkingLotInfo.location.lat], props.parkingLotInfo.name), '_blank')
 }
 </script>
 

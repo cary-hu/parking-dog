@@ -216,7 +216,7 @@ async function openNavigation() {
           indicator-placement="inside"
           :processing="isStillParking"
         />
-        <span block>Parking {{ Math.floor(currentPeriod) }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}% remaining in the current period.</span>
+        <span block>Parking {{ Math.floor(currentPeriod) + 1 }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}% remaining in the current period.</span>
         <span block>{{ remainTips }}</span>
       </n-alert>
     </div>

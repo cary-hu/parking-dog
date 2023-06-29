@@ -79,3 +79,9 @@ async function openNavigation() {
     </v-card-actions>
   </v-card>
 </template>
+
+<style scoped>
+.map-page-container {
+  height: 300px;
+}
+</style>

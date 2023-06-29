@@ -34,4 +34,24 @@ export class MapUtils {
       }
     })
   }
+
+  public static async getCurrentLocation(): Promise<[number, number]> {
+    return new Promise((resolve, reject) => {
+      const position: [number, number] = [0, 0]
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          position[0] = pos.coords.longitude
+          position[1] = pos.coords.latitude
+          resolve(position)
+        },
+        (error) => {
+          reject(error)
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        })
+    })
+  }
 }

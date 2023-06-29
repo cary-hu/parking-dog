@@ -18,11 +18,6 @@ const distanceBetweenHomeAndParkingLot = computed(() => {
 })
 let map: any = null
 
-const geolocationOptions = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0,
-}
 const parkingLotsLoading = ref(true)
 async function refreshParkingLots() {
   parkingLotsLoading.value = true
@@ -47,6 +42,19 @@ function onOpenAddParkingLotDialog() {
   addParkingLotData.value = new ParkingLotInfo()
 }
 
+async function refreshCenter() {
+  try {
+    const position = await MapUtils.getCurrentLocation()
+    center.value[0] = position[0]
+    center.value[1] = position[1]
+  }
+  catch (error) {
+    setTimeout(() => {
+      refreshCenter()
+    }, 100)
+  }
+}
+
 function mapInit(_map: any) {
   map = _map
   watch(center, () => {
@@ -55,11 +63,7 @@ function mapInit(_map: any) {
   }, {
     immediate: true,
   })
-  navigator.geolocation.getCurrentPosition((pos) => {
-    const crd = pos.coords
-    center.value[0] = crd.longitude
-    center.value[1] = crd.latitude
-  }, null, geolocationOptions)
+  refreshCenter()
 }
 function draw(pos: number[]) {
   if (!map) {
@@ -109,21 +113,13 @@ onMounted(() => {
         </v-col>
       </v-row>
     </v-container>
-    <v-dialog
-      v-model="addParkingLotDialog"
-      fullscreen
-      :scrim="false"
-      transition="dialog-bottom-transition"
-    >
+    <v-dialog v-model="addParkingLotDialog" fullscreen :scrim="false" transition="dialog-bottom-transition">
       <v-card>
         <v-toolbar>
           <v-toolbar-title>Parking Lot</v-toolbar-title>
           <v-spacer />
           <v-toolbar-items>
-            <v-btn
-              variant="text"
-              @click="addParkingLotDialog = false"
-            >
+            <v-btn variant="text" @click="addParkingLotDialog = false">
               Exit
             </v-btn>
           </v-toolbar-items>
@@ -137,57 +133,38 @@ onMounted(() => {
                   v-model="addParkingLotData.name"
                   label="Parking Lot Name"
                   required
+                  persistent-hint
+                  :hint="`${addParkingLotData.cost.price} Yuan, per ${addParkingLotData.cost.per} ${addParkingLotData.cost.period}, away from home ${distanceBetweenHomeAndParkingLot} miles`"
                 />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field
-                  v-model="addParkingLotData.cost.price"
-                  label="Price"
-                />
+                <v-text-field v-model="addParkingLotData.cost.price" label="Price" />
               </v-col>
               <v-col>
-                <v-text-field
-                  v-model="addParkingLotData.cost.per"
-                  label="Per"
-                />
+                <v-text-field v-model="addParkingLotData.cost.per" label="Per" />
               </v-col>
               <v-col>
                 <v-select
-                  v-model="addParkingLotData.cost.period"
-                  label="Unit"
-                  persistent-hint
-                  :hint="`${addParkingLotData.cost.price} Yuan, per ${addParkingLotData.cost.per} ${addParkingLotData.cost.period}, away from home ${distanceBetweenHomeAndParkingLot} miles`"
+                  v-model="addParkingLotData.cost.period" label="Unit"
+
                   :items="['hour', 'day', 'week', 'month', 'year']"
                 />
               </v-col>
             </v-row>
             <v-row>
-              <v-text-field
-                v-model="addParkingLotData.location.lng"
-                label="longitude"
-                disabled
-              />
-              <v-text-field
-                v-model="addParkingLotData.location.lat"
-                label="latitude"
-                disabled
-              />
+              <v-text-field v-model="addParkingLotData.location.lng" label="longitude" disabled class="d-none" />
+              <v-text-field v-model="addParkingLotData.location.lat" label="latitude" disabled class="d-none" />
             </v-row>
             <v-row>
               <v-col>
                 <div class="map-page-container">
-                  <el-amap
-                    :center="center"
-                    :zoom="zoom"
-                    @init="mapInit"
-                  >
-                    <el-amap-mouse-tool
-                      type="marker"
-                      :show-tooltip="false"
-                      @draw="draw"
-                    />
+                  <div class="map-maker-position">
+                    {{ addParkingLotData.location.lng }} {{ addParkingLotData.location.lat }}
+                  </div>
+                  <el-amap :center="center" :zoom="zoom" @init="mapInit">
+                    <el-amap-mouse-tool type="marker" :show-tooltip="false" @draw="draw" />
                   </el-amap>
                 </div>
               </v-col>
@@ -202,9 +179,22 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .map-page-container {
-  width:100%;
+  width: 100%;
   height: 300px;
-  }
+  position: relative;
+}
+
+.map-page-container::after {
+  display: none;
+}
+
+.map-maker-position {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  opacity: 0.35;
+}
 </style>

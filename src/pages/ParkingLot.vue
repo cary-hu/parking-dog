@@ -159,7 +159,7 @@ onMounted(() => {
             </v-row>
             <v-row>
               <v-col>
-                <div class="map-page-container">
+                <div class="map-page-container" style="z-index: 1;">
                   <div class="map-maker-position">
                     {{ addParkingLotData.location.lng }} {{ addParkingLotData.location.lat }}
                   </div>

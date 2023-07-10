@@ -24,6 +24,7 @@ function openModifyParkingInfoDialog() {
     modifyParkingInfoTitle.value = 'Exit Parking Lot'
     modifyParkingInfoButtonText.value = 'Exit'
     modifyParkingInfoModel.value.endTime = new Date()
+    modifyParkingInfoModel.value.actualCost = estimateCost.value
   }
   else {
     modifyParkingInfoTitle.value = 'Modify the Parking Info'

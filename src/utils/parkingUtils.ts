@@ -30,4 +30,28 @@ export class parkingUtils {
     }
     return totalPeriod
   }
+
+  public static convertPeriodToMinutes(cost: IParkingCost) {
+    let minutes = 0
+    switch (cost.period) {
+      case CostPeriod.Hour:
+        minutes = 60 * cost.per
+        break
+      case CostPeriod.Day:
+        minutes = 24 * 60 * cost.per
+        break
+      case CostPeriod.Week:
+        minutes = 7 * 24 * 60 * cost.per
+        break
+      case CostPeriod.Month:
+        minutes = 30 * 24 * 60 * cost.per
+        break
+      case CostPeriod.Year:
+        minutes = 365 * 24 * 60 * cost.per
+        break
+      default:
+        break
+    }
+    return minutes
+  }
 }

@@ -122,7 +122,7 @@ async function onExitParkingLot() {
 }
 
 const currentCycleRemain = computed(() => {
-  return Number.parseFloat(((currentPeriod.value - Math.floor(currentPeriod.value)) * 100).toFixed(2))
+  return Number.parseFloat(((currentPeriod.value - Math.floor(currentPeriod.value)) * 100).toString())
 })
 const remainTips = computed(() => {
   let tips = 'It\'s a good deal to exit the parking lot now'
@@ -210,7 +210,7 @@ async function openNavigation() {
       <n-alert :type="progressColor" :show-icon="false">
         <n-progress
           type="line"
-          :percentage="currentCycleRemain"
+          :percentage="Number.parseFloat(currentCycleRemain.toFixed(2))"
           :height="16"
           :color="progressColor"
           :status="progressColor"
@@ -218,7 +218,7 @@ async function openNavigation() {
           indicator-placement="inside"
           :processing="isStillParking"
         />
-        <span block>Parking {{ Math.floor(currentPeriod) + 1 }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}% remaining in the current period.</span>
+        <span block>Parking {{ Math.floor(currentPeriod) + 1 }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}%({{(parkingUtils.convertPeriodToMinutes(parkingInfo.parkingLot.cost) * ((100 - currentCycleRemain) / 100)).toFixed(2)}} Minutes) remaining in the current period.</span>
         <span block>{{ remainTips }}</span>
       </n-alert>
     </div>

@@ -13,6 +13,8 @@ const addParkingInfoForm = ref()
 const addParkingInfo = ref<ParkingInfo>(new ParkingInfo())
 
 async function onParking() {
+  await initAllParkingLot()
+
   if (allParkingLots.value.length === 0) {
     message.warning('There is no parking lot, add parking lot first')
     return
@@ -82,8 +84,6 @@ async function refreshAllParkingInfo() {
   parkingInfoLoading.value = false
 }
 async function init() {
-  await parkingService.ensureParkingInfoBasket()
-  await initAllParkingLot()
   await refreshAllParkingInfo()
 }
 const isStillParking = computed(() => {

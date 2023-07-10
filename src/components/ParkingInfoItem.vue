@@ -156,9 +156,11 @@ async function openNavigation() {
       <div class="map-page-container">
         <el-amap
           :center="MapUtils._transform(centerPoint, 0.14, 255)"
-          :zoom="17"
+          :zoom="16"
           @init="mapInit"
-        />
+        >
+          <el-amap-control-map-type :visible="false" :show-road="true" :show-traffic="true" />
+        </el-amap>
       </div>
       <div flex pt-3>
         <div me-3>
@@ -218,7 +220,7 @@ async function openNavigation() {
           indicator-placement="inside"
           :processing="isStillParking"
         />
-        <span block>Parking {{ Math.floor(currentPeriod) + 1 }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}%({{(parkingUtils.convertPeriodToMinutes(parkingInfo.parkingLot.cost) * ((100 - currentCycleRemain) / 100)).toFixed(2)}} Minutes) remaining in the current period.</span>
+        <span block>Parking {{ Math.floor(currentPeriod) + 1 }} periods, {{ (100 - currentCycleRemain).toFixed(2) }}%({{ (parkingUtils.convertPeriodToMinutes(parkingInfo.parkingLot.cost) * ((100 - currentCycleRemain) / 100)).toFixed(2) }} Minutes) remaining in the current period.</span>
         <span block>{{ remainTips }}</span>
       </n-alert>
     </div>

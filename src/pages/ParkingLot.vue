@@ -11,6 +11,7 @@ const addParkingLotFormValid = ref(false)
 const addParkingLotLoading = ref(false)
 const addParkingLotData = ref(new ParkingLotInfo())
 const zoom = ref(16)
+const addPackingLotMapZoom = ref(1)
 const center = ref([108.86888340442673, 34.237322002402756])
 const home = ref([108.87116, 34.234962])
 const distanceBetweenHomeAndParkingLot = computed(() => {
@@ -64,6 +65,7 @@ function mapInit(_map: any) {
     immediate: true,
   })
   refreshCenter()
+  addPackingLotMapZoom.value = 16
 }
 function draw(pos: number[]) {
   if (!map) {
@@ -163,8 +165,9 @@ onMounted(() => {
                   <div class="map-maker-position">
                     {{ addParkingLotData.location.lng }} {{ addParkingLotData.location.lat }}
                   </div>
-                  <el-amap :center="center" :zoom="zoom" @init="mapInit">
+                  <el-amap :center="center" :zoom="addPackingLotMapZoom" @init="mapInit">
                     <el-amap-mouse-tool type="marker" :show-tooltip="false" @draw="draw" />
+                    <el-amap-control-map-type :visible="false" :show-road="true" :show-traffic="true" />
                   </el-amap>
                 </div>
               </v-col>

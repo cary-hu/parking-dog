@@ -53,7 +53,9 @@ async function openNavigation() {
         :center="MapUtils._transform(centerPoint, 0.14, 245)"
         :zoom="17"
         @init="mapInit"
-      />
+      >
+        <el-amap-control-map-type :visible="false" :show-road="true" :show-traffic="true" />
+      </el-amap>
     </div>
     <v-card-item>
       <template #title>

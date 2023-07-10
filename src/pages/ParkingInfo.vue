@@ -3,6 +3,7 @@ import { ParkingInfo } from '@/@types/parkingInfo'
 import type { ParkingLotInfo } from '@/@types/parkingLot'
 import parkingLotService from '@/services/parkingLotService'
 import parkingService from '@/services/parkingService'
+import { MessageReactive } from 'naive-ui';
 
 const allParkingLots = ref<ParkingLotInfo[]>([])
 const allParkingInfos = ref<ParkingInfo[]>([])
@@ -31,7 +32,7 @@ async function onParking() {
 async function parkingMyDog() {
   const newParkingInfo = addParkingInfo.value
   await parkingService.addOrUpdateParkingInfo(newParkingInfo)
-  await refreshAllParkingInfo()
+  await refreshData();
 }
 
 async function initAllParkingLot() {
@@ -64,27 +65,42 @@ async function initAllParkingLot() {
 const parkingInfoLoading = ref(true)
 async function refreshAllParkingInfo() {
   parkingInfoLoading.value = true
-  const loadingMessage = message.loading('Loading parking info', {
-    closable: false,
-    duration: 0,
-  })
-  try {
-    allParkingInfos.value = await parkingService.getParkingInfos()
-    loadingMessage.type = 'success'
-    loadingMessage.content = 'Loading parking info successful.'
-    setTimeout(() => {
-      loadingMessage.destroy()
-    }, 1000)
-  }
-  catch (error) {
-    loadingMessage.closable = true
-    loadingMessage.type = 'error'
-    loadingMessage.content = 'Loading parking ParkingInfo failed.'
-  }
+  allParkingInfos.value = await parkingService.getParkingInfos()
   parkingInfoLoading.value = false
 }
-async function init() {
-  await refreshAllParkingInfo()
+let initRetryCounter = 0;
+let loadingMessage: MessageReactive | null = null;
+async function refreshData() {
+  if (!loadingMessage) {
+    loadingMessage = message.loading('Loading parking info', {
+      closable: false,
+      duration: 0,
+    })
+  }
+  loadingMessage.content = initRetryCounter > 0 ? `Retry loading parking info ${initRetryCounter} times` : 'Loading parking info'
+  loadingMessage.type = 'loading'
+  try {
+    await refreshAllParkingInfo()
+    loadingMessage.type = 'success'
+    loadingMessage.content = 'Loading parking info successful.'
+    loadingMessage.duration = 2000
+    loadingMessage.closable = true
+    setTimeout(() => {
+      if (loadingMessage) {
+        loadingMessage.destroy()
+        loadingMessage = null;
+      }
+    }, 3000);
+  } catch (error) {
+    initRetryCounter++;
+    if (loadingMessage) {
+      loadingMessage.type = 'error'
+      loadingMessage.content = `Retry loading parking info ${initRetryCounter} times`
+    }
+    setTimeout(() => {
+      refreshData()
+    }, 2000);
+  }
 }
 const isStillParking = computed(() => {
   const latestParkingInfo = allParkingInfos.value[0]
@@ -94,10 +110,10 @@ const isStillParking = computed(() => {
   return latestParkingInfo.startTime === latestParkingInfo.endTime
 })
 async function onItemUpdated() {
-  await refreshAllParkingInfo()
+  await refreshData();
 }
 onMounted(() => {
-  init()
+  refreshData()
 })
 </script>
 
@@ -118,45 +134,21 @@ onMounted(() => {
         <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
       </li>
     </ul>
-    <v-dialog
-      v-model="addParkingInfoDialog"
-      fullscreen
-      :scrim="false"
-      transition="dialog-bottom-transition"
-    >
+    <v-dialog v-model="addParkingInfoDialog" fullscreen :scrim="false" transition="dialog-bottom-transition">
       <v-card>
-        <v-toolbar
-          dark
-          color="primary"
-        >
-          <v-btn
-            icon
-            dark
-            @click="addParkingInfoDialog = false"
-          >
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="addParkingInfoDialog = false">
             <i class="fa-solid fa-xmark" />
           </v-btn>
           <v-toolbar-title>Parking My Dog</v-toolbar-title>
         </v-toolbar>
         <v-form ref="addParkingInfoForm">
-          <v-combobox
-            v-model="addParkingInfo.parkingLot"
-            :items="allParkingLots"
-            item-title="name"
-            item-value="id"
+          <v-combobox v-model="addParkingInfo.parkingLot" :items="allParkingLots" item-title="name" item-value="id"
             :hint="`${addParkingInfo?.parkingLot?.cost?.price} Yuan per ${addParkingInfo?.parkingLot?.cost?.per} ${addParkingInfo?.parkingLot?.cost?.period}`"
-            :rules="[(v: ParkingLotInfo) => !!v || 'Item is required']"
-            label="Parking Lot"
-            persistent-hint
-            return-object
-            required
-          />
+            :rules="[(v: ParkingLotInfo) => !!v || 'Item is required']" label="Parking Lot" persistent-hint return-object
+            required />
           <div class="d-flex flex-column">
-            <v-btn
-              class="mt-4"
-              block
-              @click="parkingMyDog"
-            >
+            <v-btn class="mt-4" block @click="parkingMyDog">
               Parking
             </v-btn>
           </div>
@@ -169,6 +161,7 @@ onMounted(() => {
 <style lang="less" scoped>
 ul {
   list-style: none;
+
   li {
     margin-block-end: 2rem;
   }

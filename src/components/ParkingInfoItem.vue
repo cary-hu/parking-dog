@@ -28,6 +28,7 @@ function openModifyParkingInfoDialog() {
   else {
     modifyParkingInfoTitle.value = 'Modify the Parking Info'
     modifyParkingInfoButtonText.value = 'Modify'
+    parkingDateRange.value[1] = new Date(props.parkingInfo.endTime).getTime()
   }
   modifyParkingInfoDialog.value = true
 }

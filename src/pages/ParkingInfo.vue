@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { MessageReactive } from 'naive-ui'
 import { ParkingInfo } from '@/@types/parkingInfo'
 import type { ParkingLotInfo } from '@/@types/parkingLot'
 import parkingLotService from '@/services/parkingLotService'
 import parkingService from '@/services/parkingService'
-import { MessageReactive } from 'naive-ui';
 
 const allParkingLots = ref<ParkingLotInfo[]>([])
 const allParkingInfos = ref<ParkingInfo[]>([])
@@ -32,7 +32,7 @@ async function onParking() {
 async function parkingMyDog() {
   const newParkingInfo = addParkingInfo.value
   await parkingService.addOrUpdateParkingInfo(newParkingInfo)
-  await refreshData();
+  await refreshData()
 }
 
 async function initAllParkingLot() {
@@ -68,8 +68,8 @@ async function refreshAllParkingInfo() {
   allParkingInfos.value = await parkingService.getParkingInfos()
   parkingInfoLoading.value = false
 }
-let initRetryCounter = 0;
-let loadingMessage: MessageReactive | null = null;
+let initRetryCounter = 0
+let loadingMessage: MessageReactive | null = null
 async function refreshData() {
   if (!loadingMessage) {
     loadingMessage = message.loading('Loading parking info', {
@@ -88,18 +88,19 @@ async function refreshData() {
     setTimeout(() => {
       if (loadingMessage) {
         loadingMessage.destroy()
-        loadingMessage = null;
+        loadingMessage = null
       }
-    }, 3000);
-  } catch (error) {
-    initRetryCounter++;
+    }, 3000)
+  }
+  catch (error) {
+    initRetryCounter++
     if (loadingMessage) {
       loadingMessage.type = 'error'
       loadingMessage.content = `Retry loading parking info ${initRetryCounter} times`
     }
     setTimeout(() => {
       refreshData()
-    }, 2000);
+    }, 2000)
   }
 }
 const isStillParking = computed(() => {
@@ -110,7 +111,7 @@ const isStillParking = computed(() => {
   return latestParkingInfo.startTime === latestParkingInfo.endTime
 })
 async function onItemUpdated() {
-  await refreshData();
+  await refreshData()
 }
 onMounted(() => {
   refreshData()
@@ -143,10 +144,12 @@ onMounted(() => {
           <v-toolbar-title>Parking My Dog</v-toolbar-title>
         </v-toolbar>
         <v-form ref="addParkingInfoForm">
-          <v-combobox v-model="addParkingInfo.parkingLot" :items="allParkingLots" item-title="name" item-value="id"
+          <v-combobox
+            v-model="addParkingInfo.parkingLot" :items="allParkingLots" item-title="name" item-value="id"
             :hint="`${addParkingInfo?.parkingLot?.cost?.price} Yuan per ${addParkingInfo?.parkingLot?.cost?.per} ${addParkingInfo?.parkingLot?.cost?.period}`"
             :rules="[(v: ParkingLotInfo) => !!v || 'Item is required']" label="Parking Lot" persistent-hint return-object
-            required />
+            required
+          />
           <div class="d-flex flex-column">
             <v-btn class="mt-4" block @click="parkingMyDog">
               Parking

@@ -18,6 +18,16 @@ const modifyParkingInfoButtonText = ref('')
 const modifyParkingInfoModel = ref<ParkingInfo>(new ParkingInfo())
 const parkingDateRange = ref<[number, number]>([new Date(props.parkingInfo.startTime).getTime(), Date.now()])
 
+const computedTrigger = ref(0)
+const estimateCost = computed(() => {
+  if (computedTrigger.value + 1 > 0) {
+    // do nothing
+  }
+  if (props.parkingInfo?.startTime !== props.parkingInfo?.endTime)
+    return props.parkingInfo?.expectedCost
+  return parkingUtils.calcEstimateCost(getMinute(props.parkingInfo!.startTime, new Date()), props.parkingInfo!.parkingLot.cost)
+})
+
 function openModifyParkingInfoDialog() {
   modifyParkingInfoModel.value = JSON.parse(JSON.stringify(props.parkingInfo))
   if (props.parkingInfo.startTime === props.parkingInfo.endTime) {
@@ -60,15 +70,6 @@ function getMinute(time: Date, twoTime: Date, value = 0) {
     return Number.parseInt((chaTime / 60000).toString())
 }
 
-const computedTrigger = ref(0)
-const estimateCost = computed(() => {
-  if (computedTrigger.value + 1 > 0) {
-    // do nothing
-  }
-  if (props.parkingInfo?.startTime !== props.parkingInfo?.endTime)
-    return props.parkingInfo?.expectedCost
-  return parkingUtils.calcEstimateCost(getMinute(props.parkingInfo!.startTime, new Date()), props.parkingInfo!.parkingLot.cost)
-})
 const currentPeriod = computed(() => {
   if (computedTrigger.value + 1 > 0) {
     // do nothing

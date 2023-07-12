@@ -129,21 +129,25 @@ onMounted(() => {
         {{ showAllParkingInfos ? "Less Info" : "More Info" }}
       </v-btn>
     </div>
-    <ul v-if="parkingInfoLoading">
-      <li flex justify-center>
-        <n-skeleton height="430px" width="98%" />
-      </li>
-    </ul>
-    <ul v-else>
-      <template v-if="showAllParkingInfos">
-        <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
+    <v-container v-if="parkingInfoLoading">
+      <v-row>
+        <v-col v-for="index in 6" :key="index" cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="4">
+          <n-skeleton height="430px" width="100%" />
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container v-else>
+      <v-row v-if="showAllParkingInfos">
+        <v-col v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id" cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="4">
           <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
-        </li>
-      </template>
-      <li v-else>
-        <ParkingInfoItem :parking-info="allParkingInfos[0]" @on-item-updated="onItemUpdated" />
-      </li>
-    </ul>
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="4">
+          <ParkingInfoItem :parking-info="allParkingInfos[0]" @on-item-updated="onItemUpdated" />
+        </v-col>
+      </v-row>
+    </v-container>
     <v-dialog v-model="addParkingInfoDialog" fullscreen :scrim="false" transition="dialog-bottom-transition">
       <v-card>
         <v-toolbar dark color="primary">

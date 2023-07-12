@@ -8,6 +8,7 @@ import parkingService from '@/services/parkingService'
 const allParkingLots = ref<ParkingLotInfo[]>([])
 const allParkingInfos = ref<ParkingInfo[]>([])
 const message = useMessage()
+const showAllParkingInfos = ref(false)
 
 const addParkingInfoDialog = ref(false)
 const addParkingInfoForm = ref()
@@ -120,19 +121,27 @@ onMounted(() => {
 
 <template>
   <div>
-    <ul v-if="parkingInfoLoading">
-      <li v-for="index in 3" :key="index" flex justify-center>
-        <n-skeleton height="330px" width="98%" />
-      </li>
-    </ul>
     <div flex justify-center w-full py-4>
       <v-btn v-if="!isStillParking && !parkingInfoLoading" border rounded="xl" size="x-large" @click="onParking">
         <i class="fa-solid fa-square-parking" />
       </v-btn>
+      <v-btn border rounded="xl" size="x-large" @click="showAllParkingInfos = !showAllParkingInfos">
+        {{ showAllParkingInfos ? "Less Info" : "More Info" }}
+      </v-btn>
     </div>
-    <ul v-if="!parkingInfoLoading">
-      <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
-        <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
+    <ul v-if="parkingInfoLoading">
+      <li flex justify-center>
+        <n-skeleton height="430px" width="98%" />
+      </li>
+    </ul>
+    <ul v-else>
+      <template v-if="showAllParkingInfos">
+        <li v-for="parkingInfo in allParkingInfos" :key="parkingInfo.id">
+          <ParkingInfoItem :parking-info="parkingInfo" @on-item-updated="onItemUpdated" />
+        </li>
+      </template>
+      <li v-else>
+        <ParkingInfoItem :parking-info="allParkingInfos[0]" @on-item-updated="onItemUpdated" />
       </li>
     </ul>
     <v-dialog v-model="addParkingInfoDialog" fullscreen :scrim="false" transition="dialog-bottom-transition">

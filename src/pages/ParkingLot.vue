@@ -104,12 +104,12 @@ onMounted(() => {
         </v-col>
       </v-row>
       <v-row v-if="parkingLotsLoading">
-        <v-col v-for="index in 6" :key="index">
-          <n-skeleton height="140px" width="572px" />
+        <v-col v-for="index in 6" :key="index" cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="4">
+          <n-skeleton height="140px" width="100%" />
         </v-col>
       </v-row>
       <v-row>
-        <v-col v-for="parkingLot in allParkingLots" :key="parkingLot.id">
+        <v-col v-for="parkingLot in allParkingLots" :key="parkingLot.id" cols="12" xs="12" sm="12" md="6" lg="6" xl="6" xxl="4">
           <ParkingLotItem :parking-lot-info="parkingLot" @onItemRemoved="refreshParkingLots" />
         </v-col>
       </v-row>

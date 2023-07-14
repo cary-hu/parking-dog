@@ -28,5 +28,6 @@ declare module 'vue' {
     ParkingLotItem: typeof import('./src/components/ParkingLotItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Test: typeof import('./src/pages/Test.vue')['default']
   }
 }
